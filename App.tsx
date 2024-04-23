@@ -6,10 +6,11 @@ import Signup from './auth/Signup';
 import Setprofile from './SetProfile';
 export default function App() {
   const Stack = createNativeStackNavigator();
+
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Sigin" component={Signin} />
+          <Stack.Screen name="Signin" component={Signin} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="setprofile" component={Setprofile} />
 
