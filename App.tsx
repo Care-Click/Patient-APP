@@ -1,35 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import React,{useState,useEffect} from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialIcons, AntDesign } from '@expo/vector-icons';
+// Import your screen components
+ 
 import Signin from './auth/Signin';
 import Signup from './auth/Signup';
-import Setprofile from './SetProfile';
 import Patient from './Patient';
-import Doctordetail from './Doctordetail';
-import Alldoctors from './Alldoctors';
+import Profile from './Profile';
 
-export default function App() {
-  const Tab = createBottomTabNavigator();
-  const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator()
+
+
+const App = () => {
+
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    getData(); // Fetch token when component mounts
-  }, [token]);
-
-  const removeValue = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      console.log('Value removed.');
-    } catch (e) {
-      console.error('Error removing value:', e);
-    }
-  };
-
+    getData()
+    
+    
+  }, []);
 
   const getData = async () => {
     try {
@@ -40,51 +33,27 @@ export default function App() {
       console.error('Error reading value:', error);
     }
   };
-
-  // If token is not available, show the Signin and Signup screens
-  if (!token) {
+  const StackNavigator = () => {
     return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Signin" component={Signin} />
-          <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="setprofile" component={Setprofile} />
-          <Stack.Screen name="Doctordetail" component={Doctordetail} />
-        <Stack.Screen name="Alldoctors" component={Alldoctors} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
-
-  // If token is available, show the main navigation with tabs
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
+      <Stack.Navigator>
+       
+        {/* <Stack.Screen name="Signup" component={Signup} /> */}
+        <Stack.Screen name="patient" component={Patient} />
         
-        <Tab.Screen
-          name="Signin"
-          component={Signin}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <MaterialIcons name="create" size={24} color="#1DBED3" />
-              </View>
-            )
-          }}
-        />
-        <Tab.Screen
-          name="Patient"
-          component={Patient}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <AntDesign name="user" size={24} color="#1DBED3" />
-              </View>
-            )
-          }} 
-        />
-
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
+        
+      </Stack.Navigator>
+    );
+  };
+return  (
+  <NavigationContainer>
+    {token ?( <Tab.Navigator>
+    <Tab.Screen name="Home" component={StackNavigator} />
+    <Stack.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>):( <Tab.Navigator>
+        <Tab.Screen name="Signin" component={Signin} />
+        <Tab.Screen name="Signup" component={Signup} />
+      </Tab.Navigator>)}
+  </NavigationContainer>
+)
 }
+export default App;
