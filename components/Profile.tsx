@@ -3,9 +3,9 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, } from 'react-native';
 import { FontAwesome, MaterialIcons, Feather, FontAwesome5,AntDesign } from '@expo/vector-icons';
 
 const Profile = () => {
-    const [selectedTab, setSelectedTab] = useState('Personal Info');
+    const [selectedTab, setSelectedTab] = useState<string>('Personal Info');
 
-    const handleTabPress = (tabName :any) => {
+    const handleTabPress = (tabName :string) => {
       setSelectedTab(tabName);
       
     };
