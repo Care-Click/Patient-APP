@@ -7,8 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  
 import Signin from './auth/Signin';
 import Signup from './auth/Signup';
-import Patient from './Patient';
-import Profile from './Profile';
+import Patient from './components/Patient';
+import Profile from './components/Profile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator()
