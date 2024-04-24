@@ -1,12 +1,18 @@
 import React,{useState} from 'react'
-import { StyleSheet ,View, Text , Button , Image , TextInput , Pressable} from 'react-native';
+import { StyleSheet ,View, Text , Button , Image , TextInput , Pressable,ScrollView,} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { Avatar, Card, } from 'react-native-paper';
 import axios from 'axios';
 function Patient() {
 
  const [id,setId]=useState("")
 const [show,setShow]=useState(false)
 const [message,setMessage]=useState("")
+const [name,setName]=useState("")
+const [data,setData]=useState([])
+
+console.log(name)
   const getid = async()=>{
     try {
       const id = await AsyncStorage.getItem('id');
@@ -22,18 +28,33 @@ const [message,setMessage]=useState("")
      try {
       console.log(id);
     
-      const result = await axios.post(`http://192.168.10.14:3000/api/request/emergencyRequest/${id}`,{
+      const {data} = await axios.post(`http://192.168.10.14:3000/api/request/emergencyRequest/${id}`,{
         message
       })
-      console.log(result)
+      console.log(data)
      } catch (error) {
       console.log(error)
       
      }
   }
+
+  const nearBy= async function handleNearBy(){
+    console.log("testtttttt")
+    try {
+      const result = await axios.get(`http://192.168.10.14:3000/api/patients/getNearByDoctors`)
+      console.log(result.data)
+      setData(result.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+    
+  
    
   return (
+    
     <View>
+      <ScrollView>
          <View  >
         <Image
         style={styles.logo}
@@ -63,9 +84,32 @@ const [message,setMessage]=useState("")
       
     </View>
   ) : null}
-</View>
 
+  <View>
+    <Pressable
+    onPress={()=>{nearBy()}}
+    >
+     <Text>get doctors</Text>
+     </Pressable>
+  </View>
+</View>
+ <Text>{data.map((element)=>{
+  return <View style={styles.container} >
+   <Card  >
+     
+  <Card.Title   />
+  <Card.Content>
+    <Text >Card title</Text>
+    <Text >Card content</Text>
+  </Card.Content>
+  <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+  
+</Card>
+</View> 
+ })}</Text>
+ </ScrollView>
     </View>
+    
   )
 }
 
@@ -110,5 +154,22 @@ const styles =  StyleSheet.create({
     padding: 10,
     
     borderRadius: 5,
+  },
+  data : {
+    flex : 1,
+    alignContent : "space-around" ,
+    flexWrap: 'wrap',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    width: 300,
+    marginVertical: 10,
+    // Example additional styles
+    elevation: 5, // Adds shadow
+    borderRadius: 10, // Adds rounded corners
   },
 })
