@@ -8,30 +8,59 @@ import axios from 'axios';
 
 function Signin({navigation}:any) {
 
-  const   [Email,setEmail]=useState("")
+  const [Email,setEmail]=useState("")
   const [Password,setPassword]=useState("")
+  const [id,setId]=useState(0)
+console.log(id)
+
+
+  const removeValue = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      console.log('Value removed.');
+    } catch (e) {
+      console.error('Error removing value:', e);
+    }
+  };
+
+ 
   
-
-
 
   const handlesignin = async function signin(email:String , password:String) {
     console.log(Email,Password)
      try {
-const {data} = await axios.post("http://192.168.10.2:3000/api/patients/signin",{
+const {data} = await axios.post("http://192.168.10.14:3000/api/patients/signin",{
         email:email,
         password : password
      })
-     console.log(data)
+     
     await AsyncStorage.setItem('token', JSON.stringify(data.token));
+    await AsyncStorage.setItem('id', JSON.stringify(data.loggedUser.id));
+
     const getData = async () => {
       try {
         const value = await AsyncStorage.getItem('token');
-        const token = value
-         console.log(token)
+      
+         console.log(value)
+          console.log(data)
+          navigation.navigate("Patient")
+           
+         
       } catch (e) {
         // error reading value
+        console.log(e)
       }
     };
+     const getid = async()=>{
+      try {
+        const id = await AsyncStorage.getItem('id');
+        setId(id)
+        
+      } catch (error) {
+        
+      }
+     }
+    getid()
     getData()
   } catch (error) {
     console.log(error)
@@ -88,7 +117,12 @@ const {data} = await axios.post("http://192.168.10.2:3000/api/patients/signin",{
        </Text>
        </View>
          
-        
+        <Pressable
+        onPress={()=>{removeValue()}}
+        >
+         
+          <Text>remove token</Text>
+        </Pressable>
       
   
         
