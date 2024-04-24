@@ -48,7 +48,7 @@ return  (
   <NavigationContainer>
     {token ?( <Tab.Navigator>
     <Tab.Screen name="Home" component={StackNavigator} />
-    <Stack.Screen name="Profile" component={Profile} />
+    <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>):( <Tab.Navigator>
         <Tab.Screen name="Signin" component={Signin} />
         <Tab.Screen name="Signup" component={Signup} />
