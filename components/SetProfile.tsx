@@ -91,7 +91,7 @@ function Setprofile({ navigation, route }: any) {
   return (
     <View style={styles.container}>
       <View>
-        <Image style={styles.logo} source={require("./assets/logo.png")} />
+        <Image style={styles.logo} source={require("../assets/logo.png")} />
         <Text style={styles.name}>CareClick</Text>
       </View>
 
