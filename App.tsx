@@ -40,6 +40,7 @@ const App = () => {
       </Stack.Navigator>
     );
   };
+
   return (
     <NavigationContainer>
       {token ? (
@@ -58,4 +59,5 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
 export default App;
