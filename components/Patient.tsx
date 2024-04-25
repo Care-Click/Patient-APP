@@ -99,14 +99,22 @@ function Patient() {
             <Dialog.Description>
               Do you want to delete this account? You cannot undo this action.
             </Dialog.Description>
-            <Pressable onPress={() => {
-              handleCancel();
-              handlerequest(message);
-            }}><Text>Submit</Text></Pressable>
-
             <Dialog.Input
               onChangeText={text => setMessage(text)}
+              style={styles.input}
             />
+            <View style={styles.buttonContainer}>
+  <Pressable onPress={() => {
+    handleCancel();
+    handlerequest(message);
+  }}>
+    <Text style={styles.buttonText}>Submit</Text>
+  </Pressable>
+  <Pressable onPress={() => { handleCancel() }}>
+    <Text style={styles.buttonText}>Cancel</Text>
+  </Pressable>
+</View>
+            
           </Dialog.Container>
         </View>
       </View>
@@ -177,6 +185,30 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     marginRight: 60
+  },
+
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    width: '100%',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  input: {
+    backgroundColor: '#f4f4f4',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    // marginBottom: 20,
+    height: 40, 
+    color : "black"
   },
 });
 
