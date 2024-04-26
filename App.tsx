@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from '@expo/vector-icons';
 import Setprofile from "./components/SetProfile";
 // Import your screen components
 import Signin from "./auth/Signin";
@@ -31,11 +32,7 @@ const App = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <MaterialCommunityIcons
-                  name="face-man-profile"
-                  size={24}
-                  color="#F26268"
-                />
+               <FontAwesome5 name="head-side-cough" size={24} color="#F26268" />
               </View>
             );
           },
@@ -65,11 +62,7 @@ const App = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <MaterialCommunityIcons
-                  name="android-messages"
-                  size={24}
-                  color="#F26268"
-                />
+               <MaterialCommunityIcons name="face-man-profile" size={24} color="#F26268"/>
               </View>
             );
           },
