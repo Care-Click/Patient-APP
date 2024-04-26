@@ -29,7 +29,7 @@ console.log(id)
   const handlesignin = async function signin(email:String , password:String) {
     console.log(Email,Password)
      try {
-const {data} = await axios.post("http://192.168.10.14:3000/api/patients/signin",{
+const {data} = await axios.post("http://192.168.1.17:3000/api/patients/signin",{
         email:email,
         password : password
      })
@@ -117,12 +117,7 @@ const {data} = await axios.post("http://192.168.10.14:3000/api/patients/signin",
        </Text>
        </View>
          
-        <Pressable
-        onPress={()=>{removeValue()}}
-        >
-         
-          <Text>remove token</Text>
-        </Pressable>
+       
       
   
         
