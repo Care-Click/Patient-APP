@@ -154,9 +154,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
-    marginLeft: 10,
-    width : 100,
-    height : 100
+    marginLeft: 60,
+    width : 50,
+    height : 50
   },
   cardContainer: {
     marginTop: 20,

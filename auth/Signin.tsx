@@ -29,7 +29,7 @@ console.log(id)
   const handlesignin = async function signin(email:String , password:String) {
     console.log(Email,Password)
      try {
-const {data} = await axios.post("http://192.168.10.8:3000/api/patients/signin",{
+const {data} = await axios.post("http://192.168.137.222:3000/api/patients/signin",{
         email:email,
         password : password
      })
@@ -105,10 +105,10 @@ const {data} = await axios.post("http://192.168.10.8:3000/api/patients/signin",{
          />
          </View>
          
-         <Pressable 
+         <Pressable style={styles.button}
        onPress={()=>{handlesignin(Email,Password)}}
        >
-        <Text style={styles.button} > sign in </Text>
+        <Text style={styles.buttonText} > sign in </Text>
 
        </Pressable>
          <View style ={styles.position}>
@@ -164,18 +164,6 @@ const styles = StyleSheet.create({
   container : {
 marginTop : 30
   } , 
-button : {
-  backgroundColor : "#1DBED3",
-  fontSize: 20 , 
-  borderRadius : 10,
-  textAlign : "center",
-  width : 200,
-  marginTop : 30 ,
-  marginLeft : 60, 
-  color : "#FFFFFF",
-   
-  
-}, 
 container1 : {
   marginTop : 50
     },
@@ -206,7 +194,23 @@ flex : 1 ,
 justifyContent : "center",
 alignItems:"center",
 marginTop : 10
- }
+ },button: {
+  marginTop: 15,
+  marginLeft: 10,
+  height: 50,
+  width: 200,
+  backgroundColor: '#F26268',
+  borderRadius: 10,
+  elevation: 3, // for Android
+},
+buttonText: {
+  marginTop: 18,
+  color: 'white',
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  fontSize: 16,
+  textAlign: 'center',
+},
 
  
     
