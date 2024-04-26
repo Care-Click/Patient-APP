@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dialog from "react-native-dialog";
 import axios from 'axios';
 
-function Patient() {
+function Patient({navigation}:any) {
   const [id, setId] = useState("");
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
@@ -31,7 +31,7 @@ function Patient() {
   const handlerequest = async (message: String) => {
     try {
       console.log(id);
-      const response = await axios.post(`http://192.168.10.5:3000/api/requests/emergencyRequest/${id}`, {
+      const response = await axios.post(`http://192.168.1.17:3000/api/requests/emergencyRequest/${id}`, {
         message
       });
       console.log(response.data);
@@ -43,8 +43,9 @@ function Patient() {
   const handleNearBy = async () => {
     console.log("testtttttt");
     try {
-      const result = await axios.get(`http://192.168.10.5:3000/api/patients/getNearByDoctors`);
+      const result = await axios.get(`http://192.168.1.17:3000/api/patients/getNearByDoctors`);
       setData(result.data);
+      console.log(result.data)
     } catch (error) {
       console.log(error);
     }
@@ -82,22 +83,29 @@ function Patient() {
           <View style={styles.cardContainer} key={index}>
             <View style={styles.card}>
               <View style={styles.cardContent}>
+                <Pressable
+                onPress={()=>{navigation.navigate("Doctordetail",{doctorId:element.id})}}
+                >
                 <Text style={styles.cardTitle}>{element.FullName}</Text>
+                </Pressable>
                 <Text style={styles.cardText}>{element.location.place.country}/{element.location.place.city}/{element.location.place.district}</Text>
                 <Text style={styles.cardText}> {element.phone_number}</Text>
               </View>
+              
               <Image
+               
                 style={styles.cardImage}
                 source={{ uri: element.profile_picture }}
               />
+            
             </View>
           </View>
         ))}
         <View style={styles.container}>
           <Dialog.Container visible={visible}>
-            <Dialog.Title>Account delete</Dialog.Title>
+            <Dialog.Title>Emergnecy Request </Dialog.Title>
             <Dialog.Description>
-              Do you want to delete this account? You cannot undo this action.
+              Please send a descriptif message the situation you are in and soon someone will respond 
             </Dialog.Description>
             <Dialog.Input
               onChangeText={text => setMessage(text)}
