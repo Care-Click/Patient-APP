@@ -14,7 +14,7 @@ const Doctordetail = () => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.1.108:3001/api/patients/getOneDoctor/${doctorId}`
+          `http://192.168.10.8:3000/api/patients/getOneDoctor/${doctorId}`
         );
 let copy = response.data
 copy.location = JSON.parse(copy.location)

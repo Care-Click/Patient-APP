@@ -31,7 +31,7 @@ function Patient({navigation}:any) {
   const handlerequest = async (message: String) => {
     try {
       console.log(id);
-      const response = await axios.post(`http://192.168.1.17:3000/api/requests/emergencyRequest/${id}`, {
+      const response = await axios.post(`http://192.168.10.8:3000/api/requests/emergencyRequest/${id}`, {
         message
       });
       console.log(response.data);
@@ -43,7 +43,7 @@ function Patient({navigation}:any) {
   const handleNearBy = async () => {
     console.log("testtttttt");
     try {
-      const result = await axios.get(`http://192.168.1.17:3000/api/patients/getNearByDoctors`);
+      const result = await axios.get(`http://192.168.10.8:3000/api/patients/getNearByDoctors`);
       setData(result.data);
       console.log(result.data)
     } catch (error) {

@@ -145,9 +145,20 @@ function Setprofile({ navigation, route }: any) {
           }}
         >
           {" "}
-          sign in{" "}
+          Sign up {" "}
         </Text>
+        
       </Pressable>
+
+      <Pressable
+            onPress={() => {
+              navigation.navigate("Signin");
+            }}
+          >
+            <Text>if you already have an account </Text>
+             <Text style={styles.navigation}>sign in</Text>
+             
+          </Pressable>
     </View>
   );
 }
@@ -190,6 +201,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 200,
+    marginTop : 50
   },
 
   title: {
@@ -223,5 +235,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: -80,
+  },
+  navigation: {
+    color: "#1DBED3",
+    fontSize: 15,
+    
   },
 });
