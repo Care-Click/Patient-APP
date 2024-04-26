@@ -58,6 +58,24 @@ const App = () => {
           },
         }}
       />
+       <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+                <MaterialCommunityIcons
+                  name="android-messages"
+                  size={24}
+                  color="#F26268"
+                />
+              </View>
+            );
+          },
+        }}
+      />
+
     </Tab.Navigator>
   );
 
