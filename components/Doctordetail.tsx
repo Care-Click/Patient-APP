@@ -14,7 +14,7 @@ const Doctordetail = () => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.137.222:3000/api/patients/getOneDoctor/${doctorId}`
+          `http://192.168.137.125:3001/api/patients/getOneDoctor/${doctorId}`
         );
 let copy = response.data
 copy.location = JSON.parse(copy.location)
@@ -75,24 +75,24 @@ copy.location = JSON.parse(copy.location)
         <View style={styles.detailContainer}>
           <Image source={{ uri: profile_picture }} style={styles.doctorImage} />
           <Text style={styles.name}>{FullName}</Text>
-          <Text style={styles.specialty}>Specialty: {speciality}</Text>
+          <Text style={styles.specialty}> {speciality}</Text>
         </View>
 
         <View style={styles.iconContainer}>
-          <AntDesign name="calendar" size={24} color="black" />
+          <AntDesign name="calendar" size={24} color="black"/>
           <AntDesign name="message1" size={24} color="black" />
           <MaterialIcons name="favorite-border" size={24} color="black" />
         </View>
 
-        <Text style={styles.contactHeader}>Contact Information</Text>
+        <Text style={styles.contactHeader}>Contact Information : </Text>
 
      
         <View style={styles.contactContainer}>
-          <Fontisto name="date" size={24} style={styles.contactIcon} />
+          <Fontisto name="date" size={24} style={styles.contactIcon}  />
           <Text>{date}</Text>
         </View>
         <View style={styles.contactContainer}>
-          <Fontisto name="email" size={24} style={styles.contactIcon} />
+          <Fontisto name="email" size={24} style={styles.contactIcon}  />
           <Text>{email}</Text>
         </View>
         <View style={styles.contactContainer}>
@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#F26268',
+
   },
   detailContainer: {
     alignItems: 'center',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
   },
   contactIcon: {
     marginRight: 10,
-    color: 'black',
+    color : "#1DBED3",
   },
 });
 

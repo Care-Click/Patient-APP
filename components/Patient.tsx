@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, TextInput, Pressable, ScrollView } from 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dialog from "react-native-dialog";
 import axios from 'axios';
+import Alldoctors from './Alldoctors';
 
 function Patient({navigation}:any) {
   const [id, setId] = useState("");
@@ -43,7 +44,7 @@ function Patient({navigation}:any) {
   const handleNearBy = async () => {
     console.log("testtttttt");
     try {
-      const result = await axios.get(`http://192.168.137.222:3000/api/patients/getNearByDoctors`);
+      const result = await axios.get(`http://192.168.137.125:3001/api/patients/getNearByDoctors`);
       setData(result.data);
       console.log(result.data)
     } catch (error) {
@@ -74,10 +75,16 @@ function Patient({navigation}:any) {
           />
           <Pressable onPress={popup}>
             
-            <Image style={styles.urgence}  source={require("../assets/urgence.png")} ></Image>
-            <Text>Send An Emergency Request</Text>
+          <Image
+              style={styles.urgence}
+              source={require("../assets/urgences.png")}
+            ></Image>
           </Pressable>
         </View>
+        <View style={styles.container}>
+          <Alldoctors navigation={navigation} />
+        </View>
+        <Text style={styles.contactHeader}> Near Doctor :  </Text>
         {data.map((element, index) => (
           <View style={styles.cardContainer} key={index}>
             <View style={styles.card}>
@@ -134,6 +141,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: 'center',
+  },
+  contactHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#F26268',
+    marginRight : 159
   },
   header: {
     flexDirection: 'row',
