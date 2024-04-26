@@ -29,7 +29,7 @@ console.log(id)
   const handlesignin = async function signin(email:String , password:String) {
     console.log(Email,Password)
      try {
-const {data} = await axios.post("http://192.168.1.17:3000/api/patients/signin",{
+const {data} = await axios.post("http://192.168.10.8:3000/api/patients/signin",{
         email:email,
         password : password
      })
@@ -71,8 +71,8 @@ const {data} = await axios.post("http://192.168.1.17:3000/api/patients/signin",{
 
   return (
 
-    <View>
-        <View>
+    <View style={styles.maincontainer}>
+        <View >
         <Image
         style={styles.logo}
         source={require("../assets/logo.png")}
@@ -140,8 +140,9 @@ const styles = StyleSheet.create({
   },
   Email : {
     color : "grey",
-    marginLeft : 20,
+    marginRight : 240 ,
     marginTop : 20
+  
   },
   name: {
     marginLeft : 80,
@@ -198,10 +199,14 @@ container1 : {
   marginTop : -10, 
   marginLeft : 20 ,
   color : "grey" ,
+ },
 
-
+ maincontainer:{
+flex : 1 , 
+justifyContent : "center",
+alignItems:"center",
+marginTop : 10
  }
-
 
  
     

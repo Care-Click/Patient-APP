@@ -24,7 +24,7 @@ function Signup({ navigation }: any) {
   }, [password, confpassword]);
 
   return (
-    <View>
+    <View  style={styles.maincontainer} >
       <View style={styles.container1}>
         <Image style={styles.logo} source={require("../assets/logo.png")} />
         <Text style={styles.name}>CareClick</Text>
@@ -73,7 +73,7 @@ function Signup({ navigation }: any) {
           }
         
         }}>
-        <View style={styles.button}>
+        <View >
           <Pressable 
           onPress={()=>{navigation.navigate("Setprofile",{email:email,password:password})}}
           >
@@ -104,7 +104,14 @@ const styles = StyleSheet.create({
     color: "#FF0000",
   },
   signup: {
-    borderRadius: 10,
+    backgroundColor : "#1DBED3",
+  fontSize: 20 , 
+  borderRadius: 6,
+  textAlign : "center",
+  width : 200,
+  marginTop : 30 ,
+  marginRight : 10 ,  
+  color : "#FFFFFF",
   },
   logo: {
     width: 150,
@@ -139,7 +146,7 @@ const styles = StyleSheet.create({
   },
   Email: {
     color: "grey",
-    marginLeft: 20,
+    marginRight: 20,
     marginTop: 20,
   },
   password: {
@@ -173,6 +180,12 @@ const styles = StyleSheet.create({
     color: "#1DBED3",
     fontSize: 15,
   },
+  maincontainer:{
+    flex : 1 , 
+    justifyContent : "center",
+    alignItems:"center",
+    marginTop : 10
+     }
 });
 function setvalid(arg0: boolean) {
   throw new Error("Function not implemented.");

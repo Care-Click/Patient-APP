@@ -14,7 +14,7 @@ const Doctordetail = () => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.1.108:3001/api/patients/getOneDoctor/${doctorId}`
+          `http://192.168.137.222:3000/api/patients/getOneDoctor/${doctorId}`
         );
 let copy = response.data
 copy.location = JSON.parse(copy.location)
@@ -63,118 +63,118 @@ copy.location = JSON.parse(copy.location)
 
   return ( 
     <View style={styles.container}>
-  <View>
-    <Image
-        style={styles.logo}
-        source={require("../assets/logo.png")}
-    />
-    <Text style={styles.name}>CareClick</Text>
-</View>
-      <View style={styles.detailContainer}>
-        <View>
-        <Image source={{ uri: profile_picture }} style={styles.doctorImage} />
+      <View style={styles.card}>
+        <View style={styles.logoContainer}>
+          <Image
+            style={styles.logo}
+            source={require("../assets/logo.png")}
+          />
+          <Text style={styles.name}>CareClick</Text>
         </View>
-        <Text style={styles.name}>{FullName}</Text>
-        <Text style={styles.specialty}>Specialty: {speciality}</Text>
-      </View>
 
-      <View style={styles.iconContainer}>
-        <AntDesign name="calendar" size={24} color="black" />
-        <AntDesign name="message1" size={24} color="black" />
-        <MaterialIcons name="favorite-border" size={24} color="black" />
-      </View>
+        <View style={styles.detailContainer}>
+          <Image source={{ uri: profile_picture }} style={styles.doctorImage} />
+          <Text style={styles.name}>{FullName}</Text>
+          <Text style={styles.specialty}>Specialty: {speciality}</Text>
+        </View>
 
-      <Text style={styles.contactHeader}>Contact Information</Text>
+        <View style={styles.iconContainer}>
+          <AntDesign name="calendar" size={24} color="black" />
+          <AntDesign name="message1" size={24} color="black" />
+          <MaterialIcons name="favorite-border" size={24} color="black" />
+        </View>
 
-      <View style={styles.contactContainer}>
-        <AntDesign name="phone" size={24} style={styles.contactIcon} />
-        <Text>{phone_number}</Text>
-      </View>
-      <View style={styles.contactContainer}>
-        <Fontisto name="date" size={24} style={styles.contactIcon} />
-        <Text>{date}</Text>
-      </View>
-      <View style={styles.contactContainer}>
-        <Fontisto name="email" size={24} style={styles.contactIcon} />
-        <Text>{email}</Text>
-      </View>
-      <View style={styles.contactContainer}>
-        <Entypo name="location-pin" size={24} style={styles.contactIcon} />
-        <Text>{loc}
-      
-    </Text>
+        <Text style={styles.contactHeader}>Contact Information</Text>
+
+     
+        <View style={styles.contactContainer}>
+          <Fontisto name="date" size={24} style={styles.contactIcon} />
+          <Text>{date}</Text>
+        </View>
+        <View style={styles.contactContainer}>
+          <Fontisto name="email" size={24} style={styles.contactIcon} />
+          <Text>{email}</Text>
+        </View>
+        <View style={styles.contactContainer}>
+          <Entypo name="location-pin" size={24} style={styles.contactIcon} />
+          <Text>{loc}</Text>
+        </View>
       </View>
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
-  logo: {
-    width: 150,
-    height: 200,
-    marginLeft: 250,
-    marginTop: -30
-},
-name: {
-  marginLeft: 190,
-  marginTop: -80,
-  color: "#F26268",
-  fontSize: 25,
-  paddingBottom: 60
-},
-doctorImage: {
-  width: 120, 
-  height: 120, 
-  borderRadius: 60, 
-  marginTop: 20, 
-},
-  logo: {
-   width : 150,
-   height : 200 ,
-   marginLeft : 130,
-   marginTop : -30
-  },
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    paddingTop: 5,
-    marginBottom: 30, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F7F7F7',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    alignItems: 'center',
   },
-  detailContainer: {
-    marginBottom: 10,
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
   },
   name: {
-    color: '#F26268', 
-    fontSize: 24, 
+    fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: 'black',
+  },
+  detailContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  doctorImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
   specialty: {
-    color: '#888',
-    fontSize: 18, 
-    marginBottom: 20, 
+    fontSize: 16,
+    color: 'black',
   },
   iconContainer: {
-    flexDirection: "row",
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 20,
   },
   contactHeader: {
-    fontSize: 16,
-    color: "#1DBED3",
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   contactContainer: {
-    flexDirection: "row",
-    marginBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   contactIcon: {
-    color: "#1DBED3",
     marginRight: 10,
+    color: 'black',
   },
 });
 
