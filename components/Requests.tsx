@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Request = () => {
   
-const [id,setId]=useState("")
+// const [id,setId]=useState("")
 const [data,setData]=useState([])
 
 useEffect(()=>{
@@ -14,12 +14,23 @@ useEffect(()=>{
 },[])
 
 
+const getid = async () => {
+  try {
+   
+    // setId(id);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const GetRequests = async ()=>{
-  getid()
+  // getid()
+  const id = await AsyncStorage.getItem('id');
+  console.log("iddddd",id)
     try {
-      const result = await axios(`http://192.168.1.17:3000/api/patients/getPatientRequests/${id}`)
-      console.log(result.data)
-      console.log("🤣🤣");
+      const result = await axios(`http://192.168.10.8:3000/api/patients/getPatientRequests/${id}`)
+      // console.log(result.data)
+      // console.log("🤣🤣");
     
       setData(result.data)
     } catch (error) {
@@ -30,75 +41,65 @@ const GetRequests = async ()=>{
 
 
 
-  const getid = async () => {
-    try {
-      const id = await AsyncStorage.getItem('id');
-      setId(id);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+ 
 
 
-==
+
 
   return ( 
-     <ScrollView>
-    <View>
-      {data.map((element) => {
-        return element.Doctor ? (
-          <View key={element.id} style={styles.gridContainer}>
-            <View style={styles.gridItem}>
-              <View style={styles.nameDateContainer}>
-                <Text style={styles.name}>{element.status}</Text>
-                <Text style={styles.date}>{element.createdAt}</Text>
-              </View>
-              <Text style={styles.status}>{element.status}</Text>
+    <ScrollView style={styles.scrollView}>
+    <View style={styles.container}>
+      {data.map((element) => (
+        <View key={element.id} style={styles.gridContainer}>
+          <View style={styles.gridItem}>
+            <View style={styles.nameDateContainer}>
+              {element.Doctor && (
+                <Text style={styles.doctorName}>{element.status}</Text>
+              )}
+              <Text style={styles.date}>{element.createdAt}</Text>
             </View>
+            <Text style={styles.status}>{element.status}</Text>
           </View>
-        ) : <View key={element.id} style={styles.gridContainer}>
-        <View style={styles.gridItem}>
-          <View style={styles.nameDateContainer}>
-            
-            <Text style={styles.date}>{element.createdAt}</Text>
-          </View>
-          <Text style={styles.status}>{element.status}</Text>
         </View>
-      </View>;
-      })}
+      ))}
     </View>
-    </ScrollView>
+  </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  container: {
+    padding: 20,
+  },
   gridContainer: {
-    flexDirection: 'row', 
-    flexWrap: 'wrap',
-    justifyContent: 'space-between', 
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
     padding: 10,
   },
   gridItem: {
-    width: '100%', 
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    marginBottom: 10,
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   nameDateContainer: {
-    flexDirection: 'column', 
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  name: {
-    fontSize: 16,
-  },
-  status: {
-    fontSize: 16,
+  doctorName: {
     fontWeight: 'bold',
+    marginRight: 10,
   },
   date: {
-    fontSize: 14,
-    color: '#666', 
+    color: '#666',
+  },
+  status: {
+    marginTop: 5,
+    color: '#333',
   },
 });
   
