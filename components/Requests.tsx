@@ -1,9 +1,9 @@
 import React,{useState,useEffect} from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Request = () => {
+const Request = ({navigation}:any) => {
   
 // const [id,setId]=useState("")
 const [data,setData]=useState([])
@@ -28,7 +28,7 @@ const GetRequests = async ()=>{
   const id = await AsyncStorage.getItem('id');
   console.log("iddddd",id)
     try {
-      const result = await axios(`http://192.168.10.8:3000/api/patients/getPatientRequests/${id}`)
+      const result = await axios(`http://192.168.137.222:3000/api/patients/getPatientRequests/${id}`)
       // console.log(result.data)
       // console.log("🤣🤣");
     
@@ -50,17 +50,30 @@ const GetRequests = async ()=>{
     <ScrollView style={styles.scrollView}>
     <View style={styles.container}>
       {data.map((element) => (
-        <View key={element.id} style={styles.gridContainer}>
-          <View style={styles.gridItem}>
-            <View style={styles.nameDateContainer}>
-              {element.Doctor && (
-                <Text style={styles.doctorName}>{element.status}</Text>
-              )}
-              <Text style={styles.date}>{element.createdAt}</Text>
+        
+        <Pressable
+            key={element.id}
+            onPress={() => {
+              if (element.Doctor && element.Doctor.id) {
+                navigation.navigate("Doctordetail", { doctorId: element.Doctor.id });
+              }
+            }}
+            disabled={!element.Doctor || !element.Doctor.id}
+          >
+            <View style={styles.gridContainer}>
+              <View style={styles.gridItem}>
+                <View style={styles.nameDateContainer}>
+                  {element.Doctor && (
+                    <Text style={styles.doctorName}>{element.Doctor.FullName}</Text>
+                  )}
+                  <Text style={styles.date}>{element.createdAt}</Text>
+                </View>
+                <Text style={[styles.status, element.status==="Accepted"? styles.greenStatus : styles.redStatus]}>
+                  {element.status}
+                </Text>
+              </View>
             </View>
-            <Text style={styles.status}>{element.status}</Text>
-          </View>
-        </View>
+          </Pressable>
       ))}
     </View>
   </ScrollView>
@@ -70,36 +83,49 @@ const GetRequests = async ()=>{
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
+    backgroundColor: '#F7F7F7',
   },
   container: {
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
   },
   gridContainer: {
+    backgroundColor: '#FFFFFF',
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 8,
-    padding: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   gridItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    padding: 15,
   },
   nameDateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 10,
   },
   doctorName: {
     fontWeight: 'bold',
     marginRight: 10,
+    color: '#333',
   },
   date: {
     color: '#666',
   },
   status: {
-    marginTop: 5,
-    color: '#333',
+    marginBottom: 10,
+  },
+  greenStatus: {
+    color: 'green',
+  },
+  redStatus: {
+    color: 'red',
   },
 });
   
