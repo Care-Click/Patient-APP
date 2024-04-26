@@ -31,7 +31,7 @@ function Patient({navigation}:any) {
   const handlerequest = async (message: String) => {
     try {
       console.log(id);
-      const response = await axios.post(`http://192.168.10.8:3000/api/requests/emergencyRequest/${id}`, {
+      const response = await axios.post(`http://192.168.137.222:3000/api/requests/emergencyRequest/${id}`, {
         message
       });
       console.log(response.data);
@@ -43,7 +43,7 @@ function Patient({navigation}:any) {
   const handleNearBy = async () => {
     console.log("testtttttt");
     try {
-      const result = await axios.get(`http://192.168.10.8:3000/api/patients/getNearByDoctors`);
+      const result = await axios.get(`http://192.168.137.222:3000/api/patients/getNearByDoctors`);
       setData(result.data);
       console.log(result.data)
     } catch (error) {
@@ -74,9 +74,8 @@ function Patient({navigation}:any) {
           />
           <Pressable onPress={popup}>
             
-            <Image style={styles.urgence} source={{
-          uri: 'https://docteurstevenot.com/wp-content/uploads/2020/01/urgences.png',
-        }} ></Image>
+            <Image style={styles.urgence}  source={require("../assets/urgence.png")} ></Image>
+            <Text>Send An Emergency Request</Text>
           </Pressable>
         </View>
         {data.map((element, index) => (
@@ -89,7 +88,7 @@ function Patient({navigation}:any) {
                 <Text style={styles.cardTitle}>{element.FullName}</Text>
                 </Pressable>
                 <Text style={styles.cardText}>{element.location.place.country}/{element.location.place.city}/{element.location.place.district}</Text>
-                <Text style={styles.cardText}> {element.phone_number}</Text>
+                <Text style={styles.cardText}> {element.email}</Text>
               </View>
               
               <Image
