@@ -65,7 +65,7 @@ function Setprofile({ navigation, route }: any) {
     });
     try {
       const { data } = await axios.post(
-        "http://192.168.1.16:3000/api/patients/signup",
+        "http://192.168.137.222:3000/api/patients/signup",
         {
           email,
           password,
@@ -78,6 +78,7 @@ function Setprofile({ navigation, route }: any) {
         }
       );
       console.log(data);
+      navigation.navigate("Signin")
     } catch (error) {
       console.log(error);
     }
@@ -137,9 +138,9 @@ function Setprofile({ navigation, route }: any) {
           setgenre(item.value);
         }}
       />
-      <Pressable>
+      <Pressable style={styles.button}>
         <Text
-          style={styles.button}
+          style={styles.buttonText}
           onPress={() => {
             signpatient();
           }}
@@ -167,12 +168,21 @@ export default Setprofile;
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#1DBED3",
-    fontSize: 20,
-    borderRadius: 30,
-    textAlign: "center",
+    marginTop: 15,
+    marginLeft: 10,
+    height: 50,
     width: 200,
-    color: "#FFFFFF",
+    backgroundColor: '#F26268',
+    borderRadius: 10,
+    elevation: 3, // for Android
+  },
+  buttonText: {
+    marginTop: 18,
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    textAlign: 'center',
   },
   dropdown: {
     margin: 16,
