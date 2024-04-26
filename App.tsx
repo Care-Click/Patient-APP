@@ -74,6 +74,7 @@ const App = () => {
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Setprofile" component={Setprofile} />
         <Stack.Screen name="Patient" component={TabNavigator} />
+        <Stack.Screen name="Doctordetail" component={Doctordetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
