@@ -74,7 +74,11 @@ function Signup({ navigation }: any) {
         
         }}>
         <View style={styles.button}>
+          <Pressable 
+          onPress={()=>{navigation.navigate("Setprofile",{email:email,password:password})}}
+          >
           <Text style={styles.signup}> next </Text>
+          </Pressable>
         </View>
       </Pressable>
       <View style={styles.position}>

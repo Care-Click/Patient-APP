@@ -3,16 +3,31 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const GridView = () => {
-
+const Request = () => {
+  
 const [id,setId]=useState("")
 const [data,setData]=useState([])
 
 useEffect(()=>{
-  getid()
+ 
   GetRequests()
 },[])
+
+
+const GetRequests = async ()=>{
+  getid()
+    try {
+      const result = await axios(`http://192.168.1.17:3000/api/patients/getPatientRequests/${id}`)
+      console.log(result.data)
+      console.log("🤣🤣");
+    
+      setData(result.data)
+    } catch (error) {
+      console.log(error)
+    }
+}
+
+
 
 
   const getid = async () => {
@@ -25,39 +40,32 @@ useEffect(()=>{
   }
 
 
-const GetRequests = async function handleGet(){
-try {
-  const result = await axios(`http://192.168.10.5:3000/api/patients/getPatientRequests/${id}`)
-  console.log(result.data)
-  setData(result.data)
-} catch (error) {
-  
-}
+==
 
-}
- 
-
-  return (
-
-    
+  return ( 
      <ScrollView>
-  
-  <View>
-    
-    {data.map((elemnet)=>{
-      return( 
-      <View style={styles.gridContainer}>
+    <View>
+      {data.map((element) => {
+        return element.Doctor ? (
+          <View key={element.id} style={styles.gridContainer}>
+            <View style={styles.gridItem}>
+              <View style={styles.nameDateContainer}>
+                <Text style={styles.name}>{element.status}</Text>
+                <Text style={styles.date}>{element.createdAt}</Text>
+              </View>
+              <Text style={styles.status}>{element.status}</Text>
+            </View>
+          </View>
+        ) : <View key={element.id} style={styles.gridContainer}>
         <View style={styles.gridItem}>
           <View style={styles.nameDateContainer}>
-            <Text style={styles.name}>{elemnet.status}</Text>
-            <Text style={styles.date}>{elemnet.createdAt}</Text>
+            
+            <Text style={styles.date}>{element.createdAt}</Text>
           </View>
-          <Text style={styles.status}>{elemnet.status}</Text>
+          <Text style={styles.status}>{element.status}</Text>
         </View>
-        
-        
-      </View>)
-    })}
+      </View>;
+      })}
     </View>
     </ScrollView>
   );
@@ -93,5 +101,7 @@ const styles = StyleSheet.create({
     color: '#666', 
   },
 });
+  
 
-export default GridView;
+
+export default Request
