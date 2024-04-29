@@ -1,126 +1,125 @@
-import React,{useState} from 'react'
-import { StyleSheet ,View, Text , Button , Image , TextInput , Pressable} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, View, Text,Button , TextInput, Image ,Pressable, ScrollView } from 'react-native';
+import { useForm, Controller } from "react-hook-form"
+import YupPassword from 'yup-password'
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import axios from 'axios';
+YupPassword(yup)
+ function Signin({navigation}:any) {
 
 
 
-
-function Signin({navigation}:any) {
-
-  const [Email,setEmail]=useState("")
-  const [Password,setPassword]=useState("")
-  const [id,setId]=useState(0)
-console.log(id)
+const schema = yup.object().shape({
+  Email:yup.string().email("invalid email format").required("this field is required"),
+  Password:yup.string().password().required("this field is required")
+})
 
 
-  const removeValue = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      console.log('Value removed.');
-    } catch (e) {
-      console.error('Error removing value:', e);
-    }
-  };
+  type FormData = {
+    Email: string
+    Password: string
+  }
 
- 
   
+  interface inputs {
+    Email: String ;
+    Password : String ;
+  }
 
-  const handlesignin = async function signin(email:String , password:String) {
-    console.log(Email,Password)
-     try {
-const {data} = await axios.post("http://192.168.137.222:3000/api/patients/signin",{
-        email:email,
-        password : password
-     })
-     
-    await AsyncStorage.setItem('token', JSON.stringify(data.token));
-    await AsyncStorage.setItem('id', JSON.stringify(data.loggedUser.id));
 
-    const getData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('token');
-      
-         console.log(value)
-          console.log(data)
-          navigation.navigate("Patient")
-           
-         
-      } catch (e) {
-        // error reading value
-        console.log(e)
-      }
-    };
-     const getid = async()=>{
-      try {
-        const id = await AsyncStorage.getItem('id');
-        setId(id)
-        
-      } catch (error) {
-        
-      }
-     }
-    getid()
-    getData()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+   
+  } = useForm<FormData>({
+    resolver:yupResolver(),
+    defaultValues: {
+      Email: "",
+      Password: "",
+    },
+  })
+  const onSubmit = async (inputs:inputs) => {
+    console.log(inputs)
+  try {
+    const {data} = await axios.post("http://192.168.137.222:3000/api/patients/signin",{
+      email:inputs.Email ,
+      password:inputs.Password
+    })
+    console.log(data)
   } catch (error) {
     console.log(error)
   }
-}
-
-
+  }
 
   return (
-
     <View style={styles.maincontainer}>
-        <View >
+      <View >
         <Image
         style={styles.logo}
         source={require("../assets/logo.png")}
         />
         <Text style={styles.name}>CareClick</Text>
         </View>
+
         <View >
         <Text style={styles.title} >Sign in to your account </Text>
         </View>
-         <Text style={styles.Email}>Email</Text>
-         <TextInput
-         style={styles.input}
-         placeholder='ex@gmail.com'
-         onChangeText={text=>setEmail(text)}
-         
-         />
-         <View style ={styles.container}>
-         <Text 
-         
-         style={styles.password}
-       
-         >
+        <Text style={styles.Email}>Email</Text>
+      <Controller
+        control={control}
+        rules={{
+          required: {value:true, message :"email is required" } , 
+          pattern: {
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/,
+            message: "Invalid Email",
+          },
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Email"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            style={styles.input}
+          />
+        )}
+        name="Email"
+      />
+      {errors.Email && <Text>{errors.Email.message}</Text>}
+      
+      <View style={styles.passwordcontainer} >
+      <Text style={styles.password}>
           Password
          </Text>
-         <TextInput
-         style={styles.input}
-         secureTextEntry={true}
-         placeholder='*******'
-         onChangeText={text=>setPassword(text)}
-         />
-         </View>
-         
-         <Pressable style={styles.button}
-       onPress={()=>{handlesignin(Email,Password)}}
-       >
-        <Text style={styles.buttonText} > sign in </Text>
+      <Controller
+        control={control}
+        rules={{
+          maxLength: 100,
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Password"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            style={styles.input}
+            secureTextEntry={true}
+          />
+        )}
+        name="Password"
+      />
+        {errors.Password && <Text style={styles.errorpassword} >{errors.Password.message}</Text>}
+</View>
 
-       </Pressable>
-         <View style ={styles.position}>
-       <Text style={styles.account}>
-        Don't have an accout ?  <Pressable    onPress={()=>{navigation.navigate("Signup")}} ><Text style={styles.navigation}>sign up</Text></Pressable>
+      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+       
+        <View style ={styles.position} >
+      <Text style={styles.account}>
+        Don't have an accout ?  <Pressable  onPress={()=>{navigation.navigate("Signup")}}   ><Text style={styles.navigation}>sign up</Text></Pressable>
        </Text>
        </View>
-         
-       
-      
-  
-        
     </View>
   )
 }
@@ -141,7 +140,7 @@ const styles = StyleSheet.create({
   Email : {
     color : "grey",
     marginRight : 240 ,
-    marginTop : 20
+    marginTop : 30
   
   },
   name: {
@@ -158,7 +157,8 @@ const styles = StyleSheet.create({
     padding: 10,
      borderRadius : 20 , 
      width : 300 , 
-    color : "black" , 
+    color : "black" ,
+     
     
   },
   container : {
@@ -174,7 +174,7 @@ container1 : {
  } ,
 
  position : {
-  marginTop : 20,
+  marginTop : 50,
   marginLeft : 20
  },
 
@@ -184,8 +184,8 @@ container1 : {
  },
 
  password : {
-  marginTop : -10, 
-  marginLeft : 20 ,
+ 
+  marginLeft : 15 ,
   color : "grey" ,
  },
 
@@ -194,6 +194,7 @@ flex : 1 ,
 justifyContent : "center",
 alignItems:"center",
 marginTop : 10
+
  },button: {
   marginTop: 15,
   marginLeft: 10,
@@ -212,6 +213,12 @@ buttonText: {
   textAlign: 'center',
 },
 
+passwordcontainer :{
+marginTop : 20
+},
  
+errorpassword : {
+  marginLeft : 100
+}
     
   });
