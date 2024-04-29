@@ -74,10 +74,10 @@ function Signup({ navigation }: any) {
         
         }}>
         <View >
-          <Pressable 
+          <Pressable style={styles.button}
           onPress={()=>{navigation.navigate("Setprofile",{email:email,password:password})}}
           >
-          <Text style={styles.signup}> next </Text>
+          <Text style={styles.buttonText}> next </Text>
           </Pressable>
         </View>
       </Pressable>
@@ -156,14 +156,21 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#1DBED3",
-    fontSize: 24,
-    borderRadius: 10,
-    textAlign: "center",
+    marginTop: 15,
+    marginLeft: 10,
+    height: 50,
     width: 200,
-    marginTop: 30,
-    marginLeft: 60,
-    color: "#FFFFFF",
+    backgroundColor: '#F26268',
+    borderRadius: 10,
+    elevation: 3, // for Android
+  },
+  buttonText: {
+    marginTop: 18,
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    textAlign: 'center',
   },
 
   position: {
