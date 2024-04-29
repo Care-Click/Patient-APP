@@ -60,9 +60,11 @@ const schema = yup.object().shape({
     console.log(error)
   }
   }
+  }
 
   return (
     <View style={styles.maincontainer}>
+      <View >
       <View >
         <Image
         style={styles.logo}
@@ -70,6 +72,7 @@ const schema = yup.object().shape({
         />
         <Text style={styles.name}>CareClick</Text>
         </View>
+
 
         <View >
         <Text style={styles.title} >Sign in to your account </Text>
@@ -124,6 +127,32 @@ const schema = yup.object().shape({
         <View style ={styles.position} >
       <Text style={styles.account}>
         Don't have an accout ?  <Pressable  onPress={()=>{navigation.navigate("Signup")}}   ><Text style={styles.navigation}>sign up</Text></Pressable>
+      <Controller
+        control={control}
+        rules={{
+          maxLength: 100,
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Password"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            style={styles.input}
+            secureTextEntry={true}
+          />
+        )}
+        name="Password"
+      />
+        {errors.Password && <Text style={styles.errorpassword} >{errors.Password.message}</Text>}
+</View>
+
+      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+       
+        <View style ={styles.position} >
+      <Text style={styles.account}>
+        Don't have an accout ?  <Pressable  onPress={()=>{navigation.navigate("Signup")}}   ><Text style={styles.navigation}>sign up</Text></Pressable>
        </Text>
        </View>
     </View>
@@ -147,6 +176,7 @@ const styles = StyleSheet.create({
     color : "grey",
     marginRight : 240 ,
     marginTop : 30
+    marginTop : 30
   
   },
   name: {
@@ -165,6 +195,8 @@ const styles = StyleSheet.create({
      width : 300 , 
     color : "black" ,
      
+    color : "black" ,
+     
     
   },
   container : {
@@ -181,6 +213,7 @@ container1 : {
 
  position : {
   marginTop : 50,
+  marginTop : 50,
   marginLeft : 20
  },
 
@@ -190,6 +223,8 @@ container1 : {
  },
 
  password : {
+ 
+  marginLeft : 15 ,
  
   marginLeft : 15 ,
   color : "grey" ,

@@ -112,7 +112,7 @@ const schema = yup.object().shape({
     });
     try {
       const { data } = await axios.post(
-        "http://192.168.1.21:3000/api/patients/signup",
+        "http://192.168.137.222:3000/api/patients/signup",
         {
           email,
           password,
@@ -217,14 +217,28 @@ const schema = yup.object().shape({
           setgenre(item.value);
         }}
       />
+      <Pressable style={styles.button}>
+        <Text
+          style={styles.buttonText}
+          onPress={() => {
+            signpatient();
+          }}
+        >
+          {" "}
+          Sign up {" "}
+        </Text>
+        
+      </Pressable>
 
-<Button title="Submit" onPress={handleSubmit(onSubmit)} />
-
-<View style ={styles.position} >
-      <Text style={styles.account}>
-        Alraedy have an account?  <Pressable  onPress={()=>{navigation.navigate("Signin")}}   ><Text style={styles.navigation}>sign in</Text></Pressable>
-       </Text>
-       </View>
+      <Pressable
+            onPress={() => {
+              navigation.navigate("Signin");
+            }}
+          >
+            <Text>if you already have an account </Text>
+             <Text style={styles.navigation}>sign in</Text>
+             
+          </Pressable>
     </View>
 
     
@@ -233,113 +247,88 @@ const schema = yup.object().shape({
 export default Signin
 
 const styles = StyleSheet.create({
+  button: {
+    marginTop: 15,
+    marginLeft: 10,
+    height: 50,
+    width: 200,
+    backgroundColor: '#F26268',
+    borderRadius: 10,
+    elevation: 3, // for Android
+  },
+  buttonText: {
+    marginTop: 18,
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: 150,
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.5,
+  },
+
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  label: {
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: -150,
+  },
   logo: {
-   width : 150,
-   height : 200 ,
-   marginLeft : 130,
-   marginTop : -30
+    width: 150,
+    height: 200,
+    marginTop : 50
   },
-  title : {
-    marginLeft : 50,
-    marginTop: -40,
-    fontSize : 25,
-  },
-  Email : {
-    color : "grey",
-    marginRight : 240 ,
-    marginTop : 30
-  
+
+  title: {
+    fontWeight: "bold",
+    fontSize: 25,
   },
   name: {
-    marginLeft : 80,
-    marginTop : -80,
-    color : "#F26268" , 
-    fontSize : 20,
-    paddingBottom : 60
-  } , 
-  input : {
+    paddingTop: 40,
+    color: "#F26268",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
+  Fullname: {
+    marginRight: 170,
+    fontWeight: "bold",
+    color: "grey",
+  },
+
+  input: {
+    marginTop: 10,
     height: 40,
-    margin: 12,
     borderWidth: 1,
-    padding: 10,
-     borderRadius : 20 , 
-     width : 300 , 
-    color : "black" ,
-     
+    borderRadius: 20,
+    width: 300,
+    color: "black",
+    marginBottom: 10,
+  },
+  containerdate: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: -80,
+  },
+  navigation: {
+    color: "#1DBED3",
+    fontSize: 15,
     
   },
-  container : {
-marginTop : 30
-  } , 
-container1 : {
-  marginTop : 50
-    },
-
- navigation : {
-  color : "#1DBED3",
-  fontSize : 15,
- } ,
-
- position : {
-  marginTop : 50,
-  marginLeft : 20
- },
-
- account : {
-   color : "#888888",
-   fontSize : 15,
- },
-
- password : {
- 
-  marginLeft : 15 ,
-  color : "grey" ,
- },
-
- maincontainer:{
-flex : 1 , 
-justifyContent : "center",
-alignItems:"center",
-marginTop : 10
-
- },button: {
-  marginTop: 15,
-  marginLeft: 10,
-  height: 50,
-  width: 200,
-  backgroundColor: '#F26268',
-  borderRadius: 10,
-  elevation: 3, // for Android
-},
-buttonText: {
-  marginTop: 18,
-  color: 'white',
-  fontWeight: 'bold',
-  textTransform: 'uppercase',
-  fontSize: 16,
-  textAlign: 'center',
-},
-
-passwordcontainer :{
-marginTop : 20
-},
- 
-errorpassword : {
-  marginLeft : 60
-},
-
-dropdown: {
-  margin: 16,
-  height: 50,
-  width: 150,
-  borderBottomColor: "gray",
-  borderBottomWidth: 0.5,
-},
-placeholderStyle: {
-  fontSize: 16,
-},
-selectedTextStyle: {
-  fontSize: 16,
-},
-    
-  });
+});
