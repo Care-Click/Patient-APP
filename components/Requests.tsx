@@ -26,11 +26,9 @@ const getid = async () => {
 const GetRequests = async ()=>{
   // getid()
   const id = await AsyncStorage.getItem('id');
-  console.log("iddddd",id)
     try {
-      const result = await axios(`http://192.168.137.222:3000/api/patients/getPatientRequests/${id}`)
-      // console.log(result.data)
-      // console.log("🤣🤣");
+      const result = await axios(`http://192.168.1.21:3000/api/patients/getPatientRequests/${id}`)
+   
     
       setData(result.data)
     } catch (error) {
