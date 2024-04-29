@@ -14,7 +14,7 @@ const Doctordetail = () => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.137.125:3001/api/patients/getOneDoctor/${doctorId}`
+          `http://192.168.1.21:3000/api/patients/getOneDoctor/${doctorId}`
         );
 let copy = response.data
 copy.location = JSON.parse(copy.location)
@@ -67,7 +67,7 @@ copy.location = JSON.parse(copy.location)
         <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
-            source={require("../assets/logo.png")}
+            source={require("../assets/image/icon.png")}
           />
           <Text style={styles.name}>CareClick</Text>
         </View>
@@ -100,6 +100,8 @@ copy.location = JSON.parse(copy.location)
           <Text>{loc}</Text>
         </View>
       </View>
+
+      
     </View>
   );
   
