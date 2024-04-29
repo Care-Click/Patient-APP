@@ -9,11 +9,14 @@ const Alldoctors = ({navigation}:any) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [doctors, setDoctors] = useState([]);
 
-  const fetchDoctors = async (speciality) => {
+  const fetchDoctors = async (speciality:string) => {
     try {
-      const response = await axios.get(`http://192.168.137.125:3001/api/patients/search/${speciality}`);
-      setDoctors(response.data);
-      console.log(response.data)
+      if (speciality) {
+        const response = await axios.get(`http://192.168.1.21:3000/api/patients/search/${speciality}`);
+        setDoctors(response.data);
+        console.log(response.data)
+      }
+      else setDoctors([]);
     } catch (error) {
       console.log(error);
     }
