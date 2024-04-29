@@ -5,61 +5,57 @@ import Dialog from "react-native-dialog";
 import axios from 'axios';
 import Alldoctors from './Alldoctors';
 
+
 function Patient({navigation}:any) {
-  const [id, setId] = useState("");
+
+  
+
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     handleNearBy();
-    getid();
+    
   }, []);
 
   const popup = () => {
     setVisible(true);
   }
 
-  const getid = async () => {
-    try {
-      const id = await AsyncStorage.getItem('id');
-      setId(id);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+ 
 
   const handlerequest = async (message: String) => {
     try {
-      console.log(id);
-      const response = await axios.post(`http://192.168.137.222:3000/api/requests/emergencyRequest/${id}`, {
+      const id = await AsyncStorage.getItem('id');
+console.log(id);
+
+      const response = await axios.post(`http://192.168.1.21:3000/api/requests/emergencyRequest/${id}`, {
         message
+      },{
+       
       });
-      console.log(response.data);
+
+    
     } catch (error) {
       console.log(error);
     }
   }
 
   const handleNearBy = async () => {
-    console.log("testtttttt");
+
+    const id = await AsyncStorage.getItem('id');
+    
+
+
     try {
-      const result = await axios.get(`http://192.168.137.125:3001/api/patients/getNearByDoctors`);
+      const result = await axios.get(`http://192.168.1.21:3000/api/patients/getNearByDoctors/1}`);
       setData(result.data);
-      console.log(result.data)
     } catch (error) {
       console.log(error);
     }
   }
 
-  const removeValue = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      console.log('Value removed.');
-    } catch (e) {
-      console.error('Error removing value:', e);
-    }
-  };
 
   const handleCancel = () => {
     setVisible(false);
@@ -71,13 +67,13 @@ function Patient({navigation}:any) {
         <View style={styles.header}>
           <Image
             style={styles.logo}
-            source={require("../assets/logo.png")}
+            source={require("../assets/image/logo.png")}
           />
           <Pressable onPress={popup}>
             
           <Image
               style={styles.urgence}
-              source={require("../assets/urgences.png")}
+              source={require("../assets/image/urgences.png")}
             ></Image>
           </Pressable>
         </View>
@@ -132,7 +128,7 @@ function Patient({navigation}:any) {
           </Dialog.Container>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
   );
 }
 
