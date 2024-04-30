@@ -4,23 +4,45 @@ import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import { AntDesign, MaterialIcons, Fontisto, Entypo } from "@expo/vector-icons";
 
+interface Location {
+  place: {
+    city: string;
+    country: string;
+    district: string;
+  };
+}
+
+interface DoctorDetails {
+  FullName: string;
+  speciality: string;
+  phone_number: string;
+  email: string;
+  location: Location;
+  date_of_birth: string;
+  profile_picture: string;
+}
+
+interface Params  {
+  Doctordetail: { doctorId: string };
+};
+
 const Doctordetail = () => {
   const route = useRoute();
-  const { doctorId  } = route.params;
-  const [doctorDetails, setDoctorDetails] = useState(null);
+  const { doctorId  } = route.params as Params["Doctordetail"];
+  const [doctorDetails, setDoctorDetails] = useState<DoctorDetails|null>();
   const [loading, setLoading] = useState(true);
-  console.log(doctorId);
+
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.1.21:3000/api/patients/getOneDoctor/${doctorId}`
+          `http://192.168.10.7:3000/api/patients/getOneDoctor/${doctorId}`
         );
+
 let copy = response.data
 copy.location = JSON.parse(copy.location)
         setDoctorDetails(copy);
         setLoading(false);
-        console.log(response.data);
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -32,7 +54,7 @@ copy.location = JSON.parse(copy.location)
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -56,8 +78,6 @@ copy.location = JSON.parse(copy.location)
     profile_picture,
   } = doctorDetails;
   let date = date_of_birth.split("T")[0];
-  console.log("doctorDetails", doctorDetails);
-  console.log(location)
   let loc = location.place.city+'-'+location.place.district+'-'+location.place.country
 
 
@@ -67,7 +87,7 @@ copy.location = JSON.parse(copy.location)
         <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
-            source={require("../assets/image/icon.png")}
+            source={require("../assets/image/logo.png")}
           />
           <Text style={styles.name}>CareClick</Text>
         </View>
