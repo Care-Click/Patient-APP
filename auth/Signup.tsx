@@ -4,7 +4,6 @@ import YupPassword from 'yup-password'
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
-import axios from 'axios';
 YupPassword(yup)
  function Signup({navigation}:any) {
 

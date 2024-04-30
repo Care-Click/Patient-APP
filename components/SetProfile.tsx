@@ -22,7 +22,7 @@ YupPassword(yup)
   }
 
   const route = useRoute();
-  const { email,password  } :inputs = route.params;
+  const { email,password  } :any = route.params;
   const data = [
     { label: " male", value: "male" },
     { label: " female", value: "female" },
@@ -100,7 +100,7 @@ const schema = yup.object().shape({
       FullName: "",
     },
   })
-  const onSubmit = async (inputs:inputs) => {
+  const onSubmit = async (inputs:any) => {
     console.log("😎😎😎", {
       email,
       password,
@@ -112,7 +112,7 @@ const schema = yup.object().shape({
     });
     try {
       const { data } = await axios.post(
-        "http://192.168.137.222:3000/api/patients/signup",
+        "http://192.168.10.7:3000/api/patients/signup",
         {
           email,
           password,
@@ -133,7 +133,7 @@ const schema = yup.object().shape({
   }
 
   return (
-    <View style={styles.maincontainer}>
+    <View style={styles.logo}>
       <View >
         <Image
         style={styles.logo}
@@ -145,7 +145,7 @@ const schema = yup.object().shape({
         <View >
         <Text style={styles.title} >Please Set your profile  </Text>
         </View>
-        <Text style={styles.Email}>FullName</Text>
+        <Text style={styles.Fullname}>FullName</Text>
       <Controller
         control={control}
         rules={{
@@ -165,8 +165,8 @@ const schema = yup.object().shape({
       />
       {errors.FullName && <Text>{errors.FullName.message}</Text>}
       
-      <View style={styles.passwordcontainer} >
-      <Text style={styles.password}>
+      <View>
+      <Text>
           PhoneNumber 
          </Text>
       <Controller
@@ -187,7 +187,7 @@ const schema = yup.object().shape({
         )}
         name="PhoneNumber"
       />
-        {errors.PhoneNumber && <Text style={styles.errorpassword} >{errors.PhoneNumber.message}</Text>}
+        {errors.PhoneNumber && <Text >{errors.PhoneNumber.message}</Text>}
 </View>
 
      
@@ -221,7 +221,7 @@ const schema = yup.object().shape({
         <Text
           style={styles.buttonText}
           onPress={() => {
-            signpatient();
+            handleSubmit(onSubmit);
           }}
         >
           {" "}
