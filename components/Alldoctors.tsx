@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList,Image, TextInput, Button, TouchableOpacity } from 'react-native'; // Import TouchableOpacity
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, FlatList, Image, TextInput, Button, TouchableOpacity } from 'react-native'; // Import TouchableOpacity
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
+interface Doctor {
+  id: number;
+  FullName: string;
+  profile_picture: string;
+}
 
-const Alldoctors = ({navigation}:any) => {
+const Alldoctors = ({ navigation }: any) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [doctors, setDoctors] = useState([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
 
-  const fetchDoctors = async (speciality:string) => {
+  const fetchDoctors = async (speciality: string) => {
     try {
       if (speciality) {
-        const response = await axios.get(`http://192.168.1.21:3000/api/patients/search/${speciality}`);
+        const response = await axios.get(`http://192.168.10.7:3000/api/patients/search/${speciality}`);
         setDoctors(response.data);
         console.log(response.data)
       }
@@ -25,12 +29,12 @@ const Alldoctors = ({navigation}:any) => {
   const searchDoctors = () => {
     fetchDoctors(searchTerm);
   };
-  const renderDoctorItem = ({ item }) => (
-  <TouchableOpacity style={styles.doctorItem}>
-       <Image source={{ uri: item.profile_picture }} style={styles.doctorImage} />
-       <Text style={styles.doctorName}>{item.FullName}</Text>
+  const renderDoctorItem = ({ item }: { item: Doctor }) => (
+    <TouchableOpacity style={styles.doctorItem}>
+      <Image source={{ uri: item.profile_picture }} style={styles.doctorImage} />
+      <Text style={styles.doctorName}>{item.FullName}</Text>
       <View style={styles.doctorInfo}>
-        
+
         {/* <Text style={styles.doctorSpecialty}>{item.MedicalExp.speciality}</Text> */}
       </View>
       <TouchableOpacity style={styles.detailButton} onPress={() => navigation.navigate('Doctordetail', { doctorId: item.id })}>
@@ -38,10 +42,10 @@ const Alldoctors = ({navigation}:any) => {
       </TouchableOpacity>
       <FontAwesome name="phone" size={24} color="red" style={styles.phoneIcon} />
       {/* <MaterialCommunityIcons name="message-processing-outline" size={24} color="red" style={styles.phoneIcon}/> */}
-  
+
     </TouchableOpacity>
-    )
-  
+  )
+
 
   return (
     <View style={styles.container}>
@@ -62,13 +66,13 @@ const Alldoctors = ({navigation}:any) => {
 };
 
 const styles = StyleSheet.create({
- 
+
   doctorContainer: {
     marginBottom: 10,
     padding: 10,
     backgroundColor: '#ffffff',
     borderRadius: 5,
-    
+
   },
   searchInput: {
     height: 40,
@@ -109,8 +113,8 @@ const styles = StyleSheet.create({
   },
   doctorInfo: {
     marginLeft: 2,
-     flex: 1,
-    
+    flex: 1,
+
   },
   doctorName: {
     fontSize: 14,
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
   phoneIcon: {
     marginHorizontal: 12,
   },
-  
+
 });
 ;
 
