@@ -5,61 +5,63 @@ import Dialog from "react-native-dialog";
 import axios from 'axios';
 import Alldoctors from './Alldoctors';
 
-function Patient({navigation}:any) {
-  const [id, setId] = useState("");
+interface Doctor {
+  id: number | null;
+  FullName: string;
+  email: string;
+  profile_picture: string;
+  location: {
+    place: {
+      city: string;
+      country: string;
+      district: string;
+    };
+  };
+}
+
+
+function Patient({ navigation }: any) {
+
+
   const [message, setMessage] = useState("");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Doctor[]>([]);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     handleNearBy();
-    getid();
+
   }, []);
 
   const popup = () => {
     setVisible(true);
   }
 
-  const getid = async () => {
-    try {
-      const id = await AsyncStorage.getItem('id');
-      setId(id);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+
 
   const handlerequest = async (message: String) => {
     try {
-      console.log(id);
-      const response = await axios.post(`http://192.168.137.222:3000/api/requests/emergencyRequest/${id}`, {
+      const id = await AsyncStorage.getItem('id');
+      await axios.post(`http://192.168.10.7:3000/api/requests/emergencyRequest/${id}`, {
         message
+      }, {
       });
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   }
 
   const handleNearBy = async () => {
-    console.log("testtttttt");
+
+    const id = await AsyncStorage.getItem('id');
+
     try {
-      const result = await axios.get(`http://192.168.137.125:3001/api/patients/getNearByDoctors`);
+      const result = await axios.get(`http://192.168.10.7:3000/api/patients/getNearByDoctors/${id}`);
       setData(result.data);
-      console.log(result.data)
     } catch (error) {
       console.log(error);
     }
   }
 
-  const removeValue = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      console.log('Value removed.');
-    } catch (e) {
-      console.error('Error removing value:', e);
-    }
-  };
 
   const handleCancel = () => {
     setVisible(false);
@@ -71,13 +73,13 @@ function Patient({navigation}:any) {
         <View style={styles.header}>
           <Image
             style={styles.logo}
-            source={require("../assets/logo.png")}
+            source={require("../assets/image/logo.png")}
           />
           <Pressable onPress={popup}>
-            
-          <Image
+
+            <Image
               style={styles.urgence}
-              source={require("../assets/urgences.png")}
+              source={require("../assets/image/urgences.png")}
             ></Image>
           </Pressable>
         </View>
@@ -85,25 +87,25 @@ function Patient({navigation}:any) {
           <Alldoctors navigation={navigation} />
         </View>
         <Text style={styles.contactHeader}> Near Doctor :  </Text>
-        {data.map((element, index) => (
+        {data?.map((element, index) => (
           <View style={styles.cardContainer} key={index}>
             <View style={styles.card}>
               <View style={styles.cardContent}>
                 <Pressable
-                onPress={()=>{navigation.navigate("Doctordetail",{doctorId:element.id})}}
+                  onPress={() => { navigation.navigate("Doctordetail", { doctorId: element.id }) }}
                 >
-                <Text style={styles.cardTitle}>{element.FullName}</Text>
+                  <Text style={styles.cardTitle}>{element.FullName}</Text>
                 </Pressable>
                 <Text style={styles.cardText}>{element.location.place.country}/{element.location.place.city}/{element.location.place.district}</Text>
                 <Text style={styles.cardText}> {element.email}</Text>
               </View>
-              
+
               <Image
-               
+
                 style={styles.cardImage}
                 source={{ uri: element.profile_picture }}
               />
-            
+
             </View>
           </View>
         ))}
@@ -111,24 +113,24 @@ function Patient({navigation}:any) {
           <Dialog.Container visible={visible}>
             <Dialog.Title>Emergnecy Request </Dialog.Title>
             <Dialog.Description>
-              Please send a descriptif message the situation you are in and soon someone will respond 
+              Please send a descriptif message the situation you are in and soon someone will respond
             </Dialog.Description>
             <Dialog.Input
               onChangeText={text => setMessage(text)}
               style={styles.input}
             />
             <View style={styles.buttonContainer}>
-  <Pressable onPress={() => {
-    handleCancel();
-    handlerequest(message);
-  }}>
-    <Text style={styles.buttonText}>Submit</Text>
-  </Pressable>
-  <Pressable onPress={() => { handleCancel() }}>
-    <Text style={styles.buttonText}>Cancel</Text>
-  </Pressable>
-</View>
-            
+              <Pressable onPress={() => {
+                handleCancel();
+                handlerequest(message);
+              }}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </Pressable>
+              <Pressable onPress={() => { handleCancel() }}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </Pressable>
+            </View>
+
           </Dialog.Container>
         </View>
       </View>
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#F26268',
-    marginRight : 159
+    marginRight: 159
   },
   header: {
     flexDirection: 'row',
@@ -168,9 +170,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
-    marginLeft: 10,
-    width : 100,
-    height : 100
+    marginLeft: 60,
+    width: 50,
+    height: 50
   },
   cardContainer: {
     marginTop: 20,
@@ -227,9 +229,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
     borderRadius: 5,
     paddingHorizontal: 10,
-    // marginBottom: 20,
-    height: 40, 
-    color : "black"
+    height: 40,
+    color: "black"
   },
 });
 

@@ -1,57 +1,44 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Request = ({navigation}:any) => {
-  
-// const [id,setId]=useState("")
-const [data,setData]=useState([])
-
-useEffect(()=>{
- 
-  GetRequests()
-},[])
-
-
-const getid = async () => {
-  try {
-   
-    // setId(id);
-  } catch (error) {
-    console.log(error);
+interface Doctors {
+  id: number | null
+  status: String
+  createdAt: string
+  Doctor: {
+    id: number | null
+    FullName: string
   }
 }
 
-const GetRequests = async ()=>{
-  // getid()
-  const id = await AsyncStorage.getItem('id');
-  console.log("iddddd",id)
+const Request = ({ navigation }: any) => {
+
+  const [data, setData] = useState<Doctors[]>([])
+
+  useEffect(() => {
+    GetRequests()
+  }, [])
+
+
+  const GetRequests = async () => {
+    const id = await AsyncStorage.getItem('id');
+
     try {
-      const result = await axios(`http://192.168.137.222:3000/api/patients/getPatientRequests/${id}`)
-      // console.log(result.data)
-      // console.log("🤣🤣");
-    
+      const result = await axios(`http://192.168.10.7:3000/api/patients/getPatientRequests/${id}`)
       setData(result.data)
     } catch (error) {
       console.log(error)
     }
-}
+  }
 
-
-
-
- 
-
-
-
-
-  return ( 
+  return (
     <ScrollView style={styles.scrollView}>
-    <View style={styles.container}>
-      {data.map((element) => (
-        
-        <Pressable
+      <View style={styles.container}>
+        {data.map((element) => (
+
+          <Pressable
             key={element.id}
             onPress={() => {
               if (element.Doctor && element.Doctor.id) {
@@ -68,15 +55,15 @@ const GetRequests = async ()=>{
                   )}
                   <Text style={styles.date}>{element.createdAt}</Text>
                 </View>
-                <Text style={[styles.status, element.status==="Accepted"? styles.greenStatus : styles.redStatus]}>
+                <Text style={[styles.status, element.status === "Accepted" ? styles.greenStatus : styles.redStatus]}>
                   {element.status}
                 </Text>
               </View>
             </View>
           </Pressable>
-      ))}
-    </View>
-  </ScrollView>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -128,7 +115,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
-  
+
 
 
 export default Request
