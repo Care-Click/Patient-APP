@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text,Button , TextInput, Image ,Pressable, ScrollView } from 'react-native';
+import { StyleSheet, View, Text,Button , TextInput, Image ,Pressable } from 'react-native';
 import { useForm, Controller } from "react-hook-form"
 import { useState } from 'react';
 import YupPassword from 'yup-password'
@@ -8,7 +8,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 import { Dropdown } from "react-native-element-dropdown";
 import * as yup from "yup";
-import axios from 'axios';
+import axios from '../assets/axios_config';
 
 YupPassword(yup)
 
@@ -23,6 +23,8 @@ YupPassword(yup)
 
   const route = useRoute();
   const { email,password  } :any = route.params;
+
+  
   const data = [
     { label: " male", value: "male" },
     { label: " female", value: "female" },
@@ -110,9 +112,10 @@ const schema = yup.object().shape({
       genre,
       location: loca,
     });
+    
     try {
       const { data } = await axios.post(
-        "http://192.168.10.7:3000/api/patients/signup",
+        "http://192.168.1.11:3000/api/patients/signup",
         {
           email,
           password,
@@ -217,19 +220,10 @@ const schema = yup.object().shape({
           setgenre(item.value);
         }}
       />
-      <Pressable style={styles.button}>
-        <Text
-          style={styles.buttonText}
-          onPress={() => {
-            handleSubmit(onSubmit);
-          }}
-        >
-          {" "}
-          Sign up {" "}
-        </Text>
-        
-      </Pressable>
-
+      
+        <Button title="Sign up"  onPress={handleSubmit(onSubmit)}
+           
+              />
       <Pressable
             onPress={() => {
               navigation.navigate("Signin");

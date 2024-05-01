@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, Button } from 'react-native';
 import { FontAwesome, MaterialIcons, Feather, AntDesign  , Ionicons } from '@expo/vector-icons';
-import axios from 'axios';
+import axios from '../assets/axios_config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -47,7 +47,7 @@ const Profile = () => {
   const getPatient = async () => {
     const id = await AsyncStorage.getItem('id');
     try {
-      const { data } = await axios.get(`http://192.168.10.7:3000/api/doctors/patient/${id}`);
+      const { data } = await axios.get(`http://192.168.1.11:3000/api/doctors/patient/${id}`);
       data.date_of_birth = new Date(data.date_of_birth).toLocaleDateString() 
       setPatient(data);
       setMedinfo(data.medicalInfo);
@@ -65,7 +65,7 @@ const Profile = () => {
   const onSubmit = async (data: any) => {
     try {
       const id = await AsyncStorage.getItem('id');
-      await axios.put(`http://192.168.10.7:3000/api/patients/updateProfile/${id}`, data);
+      await axios.put(`http://192.168.1.11:3000/api/patients/updateProfile/${id}`, data);
 
       setPatient(data);
     } catch (error) {
@@ -262,13 +262,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   logo: {
-    width: 150,
-    height: 200,
-    marginLeft: 250,
+    width: 100,
+    height: 100,
+    
   },
   name: {
-    marginLeft: 190,
-    marginTop: -80,
+    marginLeft: 70,
+    marginTop: -50,
     color: "#F26268",
     fontSize: 25,
     paddingBottom: 60
