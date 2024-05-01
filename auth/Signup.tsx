@@ -45,7 +45,7 @@ const schema = yup.object().shape({
     },
   })
   const onSubmit = (inputs:inputs) => {
-    console.log(inputs)
+    
    navigation.navigate("Setprofile" ,{email:inputs.Email,password:inputs.Password})
   }
 
