@@ -11,6 +11,7 @@ import Dialog from "react-native-dialog";
 import axios from "../assets/axios_config";
 import Alldoctors from "./Alldoctors";
 
+
 interface Doctor {
   id: number | null;
   FullName: string;
@@ -40,12 +41,11 @@ function Patient({ navigation }: any) {
 
   const handlerequest = async (message: String) => {
     try {
+
       await axios.post(
-        `http://192.168.1.11:3000/api/requests/emergencyRequest`,
-        {
-          message,
-        },
-        {}
+        `http://192.168.10.11:3000/api/requests/emergencyRequest`, {message }
+       
+        
       );
     } catch (error) {
       console.log(error);
@@ -54,8 +54,9 @@ function Patient({ navigation }: any) {
 
   const handleNearBy = async () => {
     try {
+
       const result = await axios.get(
-        `http://192.168.1.11:3000/api/patients/getNearByDoctors`
+        `http://192.168.10.11:3000/api/patients/getNearByDoctors`
       );
       setData(result.data);
     } catch (error) {
@@ -100,8 +101,8 @@ function Patient({ navigation }: any) {
                   <Text style={styles.cardTitle}>{element.FullName}</Text>
                 </Pressable>
                 <Text style={styles.cardText}>
-                  {element.location.place.country}/{element.location.place.city}
-                  /{element.location.place.district}
+                  {element.location?.place?.country}/{element.location?.place?.city}
+                  /{element.location?.place?.district}  
                 </Text>
                 <Text style={styles.cardText}> {element.email}</Text>
               </View>
