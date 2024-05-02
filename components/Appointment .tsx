@@ -1,8 +1,10 @@
+import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+import { View, Text, StyleSheet, Button, FlatList, Pressable, TextInput } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from 'react-native-picker-select';
+
 interface Appointment {
   id: number;
   dateTime: string;
@@ -11,13 +13,17 @@ interface Appointment {
   createdAt: string;
   doctorId: number;}
 const AppointmentCalendar = () => {
+  const route = useRoute();
+  const doctorId  = route.params.doctorId ;
+
+
   useEffect(()=>{
 getDocApp()
   },[])
   const getDocApp=async()=>{
     try {
       const { data } = await axios.get(
-        `http://192.168.137.157:3000/api/appointment/getAppointements/1`
+        `http://192.168.10.11:3000/api/appointment/getAppointements/${doctorId}`
       );
       
       setAppointments(data);
@@ -31,25 +37,18 @@ getDocApp()
 
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const [selectedHour, setSelectedHour] = useState(null);
+  const [selectedHour, setSelectedHour] = useState("");
 
+  const [newMessageContent, setNewMessageContent] = useState("");
   
-  const handleTimeChange = (selectedtime:any) => {
-    let time=""
-    for (let index = 0; index < appointments.length; index++) {
-      time=appointments[index].dateTime;
-      time=time.substring(11,13)
-      ;
-      if(time==selectedtime)
-        console.log("haha");
-      return
-    }console.log("😂😂",parseInt(time))
-    console.log("💰💰",selectedtime);
+  const handleTimeChange = (selectedHour:any) => {
+   
+   
     setSelectedHour(selectedHour);
   };
   const handleHourPress = (hour: any) => {
     setSelectedHour(hour);
-    console.log(selectedHour);
+   
   };
   const generateTimeOptions = () => {
     const options = [];
@@ -69,6 +68,28 @@ getDocApp()
       setSelectedDate(null);
     }
   };
+  const handlechange=async (e)=>{
+    e.preventDefault();
+    try {
+let hour=""
+if (parseInt(selectedHour)<10) {
+  hour ="0"+selectedHour
+}
+else{
+  hour=selectedHour
+}
+let dateTime=selectedDate+"T"+hour+':00:00Z'
+
+let PatientName="Amine laarif"
+
+      const response = await axios.post(`http://192.168.10.11:3000/api/appointment/addAppointement/${doctorId}`,{dateTime,description:newMessageContent,PatientName} )
+      alert('New appointment created:', response.data);
+ 
+    } 
+    catch (error) {
+      console.error('Error creating appointment:', error);
+    }
+  }
   const renderItem = ({ item }) => (
     <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
       <Text>Patient Name: {item.PatientName}</Text>
@@ -80,7 +101,13 @@ getDocApp()
     <View>
       <Calendar onDayPress={handleDateSelect} markingType={"period"} style={styles.calender}/>
         <Text style={styles.label}>Selected Date:</Text>
-      {selectedDate &&  <Text style={styles.lab}>{selectedDate} </Text>}
+        <TextInput
+          style={styles.input}
+          placeholder="Type your message..."
+          value={selectedDate} 
+          
+        />
+      {/* {selectedDate &&  <Text style={styles.lab}>{selectedDate} </Text>} */}
       <Text style={styles.label}>Select Time in Hours:</Text>
       <RNPickerSelect
         items={generateTimeOptions()}
@@ -94,7 +121,20 @@ getDocApp()
         keyExtractor={(item) => item.id.toString()}
       />
     </View>
+    <Text style={styles.label}>description:</Text>
+   
+    <TextInput
+          style={styles.input}
+          placeholder="Type your message..."
+          value={newMessageContent}
+          onChangeText={(text) => setNewMessageContent(text)}
+        />
+         <Pressable onPress={(e)=>handlechange(e)}>
+
+<Text   style={styles.submit}>Submit</Text>
+</Pressable >
     </View>
+    
   );
   
 };
@@ -114,6 +154,30 @@ const pickerSelectStyles = StyleSheet.create({
     margin:20
   }})
 const styles = StyleSheet.create({
+  input: {
+    marginLeft:20,
+    alignItems:"center",
+    width:320,
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    
+  },
+  submit:{
+    alignItems:"center",
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderRadius: 5,
+     width:100,
+    marginLeft:140,
+    backgroundColor: "#1DBED3"
+  },
   calender:{
     margin:20
   },
@@ -152,6 +216,9 @@ const styles = StyleSheet.create({
   hourText: {
     fontSize: 10,
     color: "black",
+  },
+  button : {
+
   }
 });
 
