@@ -38,13 +38,13 @@ function Signin({ navigation }: any) {
   })
 
   const onSubmit = async (inputs: inputs) => {
-    console.log(inputs)
     try {
-      const { data } = await axios.post("http://192.168.10.7:3000/api/patients/signin", {
+      const { data } = await axios.post("http://192.168.1.11:3000/api/patients/signin", {
         email: inputs.Email,
         password: inputs.Password
-      })
-      await AsyncStorage.setItem('id', JSON.stringify(data.loggedUser.id));
+      }) 
+      await AsyncStorage.setItem('token', data.token);
+      
       navigation.navigate("Patient")
     } catch (error) {
       console.log(error)
