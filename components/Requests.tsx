@@ -24,7 +24,7 @@ const Request = ({ navigation }: any) => {
   const GetRequests = async () => {
 
     try {
-      const result = await axiosInstance(`http://192.168.1.11:3000/api/patients/getPatientRequests`)
+      const result = await axiosInstance(`http://192.168.10.11:3000/api/patients/getPatientRequests`)
       setData(result.data)
     } catch (error) {
       console.log(error)

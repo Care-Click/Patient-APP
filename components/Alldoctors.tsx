@@ -16,9 +16,8 @@ const Alldoctors = ({ navigation }: any) => {
   const fetchDoctors = async (speciality: string) => {
     try {
       if (speciality) {
-        const response = await axios.get(`http://192.168.1.11:3000/api/patients/search/${speciality}`);
+        const response = await axios.get(`http://192.168.10.11:3000/api/patients/search/${speciality}`);
         setDoctors(response.data);
-        console.log(response.data)
       }
       else setDoctors([]);
     } catch (error) {
