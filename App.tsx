@@ -13,10 +13,8 @@ import Patient from "./components/Patient";
 import Requests from "./components/Requests";
 import Profile from "./components/Profile";
 import Doctordetail from "./components/Doctordetail";
-import Setprofile from "./components/SetProfile";
-import Chat from "./components/Chat";
-
-
+import Alldoctors from "./components/Alldoctors";
+import Messages from "./components/Message";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,14 +69,15 @@ const App = () => {
           },
         }}
       />
-        <Tab.Screen
-        name="Chat"
-        component={Chat}
+
+<Tab.Screen
+        name="Message"
+        component={Messages}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-               <Entypo name="chat" size={24} color="#F26268" />
+               <MaterialCommunityIcons name="face-man-profile" size={24} color="#F26268"/>
               </View>
             );
           },

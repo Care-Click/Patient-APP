@@ -38,13 +38,13 @@ function Signin({ navigation }: any) {
   })
 
   const onSubmit = async (inputs: inputs) => {
-    console.log(inputs)
     try {
-      const { data } = await axios.post("http://192.168.10.21:3000/api/patients/signin", {
+      const { data } = await axios.post("http://192.168.10.11:3000/api/patients/signin", {
         email: inputs.Email,
         password: inputs.Password
-      })
-      await AsyncStorage.setItem('id', JSON.stringify(data.loggedUser.id));
+      }) 
+      await AsyncStorage.setItem('token', data.token);
+      
       navigation.navigate("Patient")
     } catch (error) {
       console.log(error)
@@ -114,7 +114,7 @@ function Signin({ navigation }: any) {
 
         <View style={styles.position}>
           <Text style={styles.account}>
-            Don't have an account? <Pressable onPress={() => { navigation.navigate("Signup") }} ><Text style={styles.navigation}>sign up</Text></Pressable>
+            Don't have an account? <Pressable onPress={() => { navigation.navigate("Signup") }} ><Text>sign up</Text></Pressable>
           </Text>
         </View>
       </View>

@@ -1,26 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, ActivityIndicator } from "react-native";
-import axios from "axios";
+import axios from "../assets/axios_config";
 import { useRoute } from "@react-navigation/native";
 import { AntDesign, MaterialIcons, Fontisto, Entypo } from "@expo/vector-icons";
 
+interface Location {
+  place: {
+    city: string;
+    country: string;
+    district: string;
+  };
+}
+
+interface DoctorDetails {
+  FullName: string;
+  speciality: string;
+  phone_number: string;
+  email: string;
+  location: Location;
+  date_of_birth: string;
+  profile_picture: string;
+}
+
+interface Params {
+  Doctordetail: { doctorId: string };
+}
+
 const Doctordetail = () => {
   const route = useRoute();
-  const { doctorId  } = route.params;
-  const [doctorDetails, setDoctorDetails] = useState(null);
+  const { doctorId } = route.params as Params["Doctordetail"];
+
+  const [doctorDetails, setDoctorDetails] = useState<DoctorDetails | null>();
   const [loading, setLoading] = useState(true);
-  console.log(doctorId);
+
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.1.21:3000/api/patients/getOneDoctor/${doctorId}`
+          `http://192.168.10.11:3000/api/patients/getOneDoctor/${doctorId}`
         );
-let copy = response.data
-copy.location = JSON.parse(copy.location)
+
+        let copy = response.data;
+        copy.location = JSON.parse(copy.location);
         setDoctorDetails(copy);
         setLoading(false);
-        console.log(response.data);
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -32,7 +55,7 @@ copy.location = JSON.parse(copy.location)
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -56,18 +79,20 @@ copy.location = JSON.parse(copy.location)
     profile_picture,
   } = doctorDetails;
   let date = date_of_birth.split("T")[0];
-  console.log("doctorDetails", doctorDetails);
-  console.log(location)
-  let loc = location.place.city+'-'+location.place.district+'-'+location.place.country
+  let loc =
+    location.place.city +
+    "-" +
+    location.place.district +
+    "-" +
+    location.place.country;
 
-
-  return ( 
+  return (
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
-            source={require("../assets/image/icon.png")}
+            source={require("../assets/image/logo.png")}
           />
           <Text style={styles.name}>CareClick</Text>
         </View>
@@ -79,20 +104,19 @@ copy.location = JSON.parse(copy.location)
         </View>
 
         <View style={styles.iconContainer}>
-          <AntDesign name="calendar" size={24} color="black"/>
+          <AntDesign name="calendar" size={24} color="black" />
           <AntDesign name="message1" size={24} color="black" />
           <MaterialIcons name="favorite-border" size={24} color="black" />
         </View>
 
         <Text style={styles.contactHeader}>Contact Information : </Text>
 
-     
         <View style={styles.contactContainer}>
-          <Fontisto name="date" size={24} style={styles.contactIcon}  />
+          <Fontisto name="date" size={24} style={styles.contactIcon} />
           <Text>{date}</Text>
         </View>
         <View style={styles.contactContainer}>
-          <Fontisto name="email" size={24} style={styles.contactIcon}  />
+          <Fontisto name="email" size={24} style={styles.contactIcon} />
           <Text>{email}</Text>
         </View>
         <View style={styles.contactContainer}>
@@ -100,37 +124,34 @@ copy.location = JSON.parse(copy.location)
           <Text>{loc}</Text>
         </View>
       </View>
-
-      
     </View>
   );
-  
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F7F7F7',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F7F7F7",
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 20,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    alignItems: 'center',
+    alignItems: "center",
   },
   logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   logo: {
@@ -140,12 +161,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#F26268',
-
+    fontWeight: "bold",
+    color: "#F26268",
   },
   detailContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   doctorImage: {
@@ -156,28 +176,28 @@ const styles = StyleSheet.create({
   },
   specialty: {
     fontSize: 16,
-    color: 'black',
+    color: "black",
   },
   iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
     marginBottom: 20,
   },
   contactHeader: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: 'black',
+    color: "black",
   },
   contactContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   contactIcon: {
     marginRight: 10,
-    color : "#1DBED3",
+    color: "#1DBED3",
   },
 });
 

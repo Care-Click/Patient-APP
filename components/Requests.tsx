@@ -1,55 +1,60 @@
-import React,{useState,useEffect} from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable,Image } from 'react-native';
+import axiosInstance from '../assets/axios_config';
 
-const Request = ({navigation}:any) => {
-  
-// const [id,setId]=useState("")
-const [data,setData]=useState([])
-
-useEffect(()=>{
- 
-  GetRequests()
-},[])
-
-
-const getid = async () => {
-  try {
-   
-    // setId(id);
-  } catch (error) {
-    console.log(error);
+interface Doctors {
+  id: number | null
+  status: String
+  createdAt: string
+  Doctor: {
+    id: number | null
+    FullName: string
   }
 }
 
-const GetRequests = async ()=>{
-  // getid()
-  const id = await AsyncStorage.getItem('id');
+const Request = ({ navigation }: any) => {
+
+  const [data, setData] = useState<Doctors[]>([])
+
+  useEffect(() => {
+    GetRequests()
+  }, [])
+
+
+  const GetRequests = async () => {
+
     try {
-      const result = await axios(`http://192.168.1.21:3000/api/patients/getPatientRequests/${id}`)
-   
-    
+      const result = await axiosInstance(`http://192.168.10.11:3000/api/patients/getPatientRequests`)
       setData(result.data)
     } catch (error) {
       console.log(error)
     }
-}
+  }
+  const formatDateTime = (dateTimeString: string) => {
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const dateTime = new Date(dateTimeString);
+    const dayOfWeek = daysOfWeek[dateTime.getDay()]; 
+    const monthOfYear = monthsOfYear[dateTime.getMonth()]; 
+    const year = dateTime.getFullYear(); 
+    const formattedTime = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${dayOfWeek}, ${monthOfYear} ${dateTime.getDate()}, ${year} at ${formattedTime}`;
+  };
+  return (
 
-
-
-
- 
-
-
-
-
-  return ( 
     <ScrollView style={styles.scrollView}>
-    <View style={styles.container}>
-      {data.map((element) => (
+      <View>
+        <Image
+          style={styles.logo}
+          source={require("../assets/image/logo.png")}
+        />
+        <Text style={styles.name}>CareClick</Text>
+      </View>
+      <View style={styles.container}>
         
-        <Pressable
+        {data.map((element) => (
+
+          <Pressable
             key={element.id}
             onPress={() => {
               if (element.Doctor && element.Doctor.id) {
@@ -64,30 +69,49 @@ const GetRequests = async ()=>{
                   {element.Doctor && (
                     <Text style={styles.doctorName}>{element.Doctor.FullName}</Text>
                   )}
-                  <Text style={styles.date}>{element.createdAt}</Text>
                 </View>
-                <Text style={[styles.status, element.status==="Accepted"? styles.greenStatus : styles.redStatus]}>
+                  <Text style={styles.date}>{formatDateTime(element.createdAt)}</Text>
+                <Text style={[styles.status, element.status === "Accepted" ? styles.greenStatus : styles.redStatus]}>
                   {element.status}
                 </Text>
               </View>
             </View>
           </Pressable>
-      ))}
-    </View>
-  </ScrollView>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  logo: {
+    marginTop: 40,
+    width: 100,
+    height: 100,
+    
+  },
+  name: {
+    marginLeft: 70,
+    marginTop: -50,
+    color: "#F26268",
+    fontSize: 25,
+    paddingBottom: 60
+  },
   scrollView: {
     flex: 1,
     backgroundColor: '#F7F7F7',
+    
   },
   container: {
+    paddingTop:100,
+    flex:1,
+    justifyContent:"center",
     paddingVertical: 20,
     paddingHorizontal: 15,
   },
   gridContainer: {
+    
+    flexWrap:'wrap',
     backgroundColor: '#FFFFFF',
     marginBottom: 20,
     borderRadius: 8,
@@ -109,6 +133,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   doctorName: {
+    
     fontWeight: 'bold',
     marginRight: 10,
     color: '#333',
@@ -126,7 +151,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
-  
+
 
 
 export default Request

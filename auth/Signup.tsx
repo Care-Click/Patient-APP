@@ -4,7 +4,6 @@ import YupPassword from 'yup-password'
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
-import axios from 'axios';
 YupPassword(yup)
  function Signup({navigation}:any) {
 
@@ -46,7 +45,7 @@ const schema = yup.object().shape({
     },
   })
   const onSubmit = (inputs:inputs) => {
-    console.log(inputs)
+    
    navigation.navigate("Setprofile" ,{email:inputs.Email,password:inputs.Password})
   }
 
