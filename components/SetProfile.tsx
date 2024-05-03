@@ -103,16 +103,7 @@ const schema = yup.object().shape({
     },
   })
   const onSubmit = async (inputs:any) => {
-    console.log("😎😎😎", {
-      email,
-      password,
-      selectedDate,
-      FullName:inputs.FullName,
-      phone_number:inputs.PhoneNumber,
-      genre,
-      location: loca,
-    });
-    
+   
     try {
       const { data } = await axios.post(
         "http://192.168.1.11:3000/api/patients/signup",
