@@ -16,6 +16,8 @@ import Profile from "./components/Profile";
 import Doctordetail from "./components/Doctordetail";
 import Alldoctors from "./components/Alldoctors";
 import Messages from "./components/Message";
+import AppointmentCalendar from "./components/Appointment ";
+import { MaterialIcons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,7 +79,21 @@ const App = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-               <MaterialCommunityIcons name="face-man-profile" size={24} color="#F26268"/>
+              <MaterialCommunityIcons name="android-messages" size={24} color="#F26268" />
+              </View>
+            );
+          },
+        }}
+      />
+
+<Tab.Screen
+        name="Appointment"
+        component={AppointmentCalendar}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+              <MaterialIcons name="schedule" size={24} color="#F26268" />
               </View>
             );
           },
