@@ -16,6 +16,7 @@ import Doctordetail from "./components/Doctordetail";
 import Alldoctors from "./components/Alldoctors";
 import Messages from "./components/Message";
 import AppointmentCalendar from "./components/Appointment ";
+import Setprofile from "./components/SetProfile";
 import { MaterialIcons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
