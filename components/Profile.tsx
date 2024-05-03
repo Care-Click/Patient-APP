@@ -45,7 +45,7 @@ const Profile = () => {
       <View>
         <Image
           style={styles.logo}
-          source={require("../assets/logo.png")}
+          source={require("../assets/image/logo.png")}
         />
         <Text style={styles.name}>CareClick</Text>
       </View>
