@@ -15,7 +15,7 @@ YupPassword(yup)
 
 
 
- function Signin({navigation}:any) {
+ function Setprofile({navigation}:any) {
 
   interface inputs {
     email:string,
@@ -204,7 +204,7 @@ const schema = yup.object().shape({
   </View>
   )
 }
-export default Signin
+export default Setprofile
 
 const styles = {
   container: {

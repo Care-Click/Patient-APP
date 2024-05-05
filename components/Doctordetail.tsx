@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, Image, ActivityIndicator, Pressable } from "react-native";
 import axios from "../assets/axios_config";
 import { useRoute } from "@react-navigation/native";
 import { AntDesign, MaterialIcons, Fontisto, Entypo } from "@expo/vector-icons";
@@ -26,7 +26,7 @@ interface Params {
   Doctordetail: { doctorId: string };
 }
 
-const Doctordetail = () => {
+const Doctordetail = ({navigation}:any) => {
   const route = useRoute();
   const { doctorId } = route.params as Params["Doctordetail"];
 
@@ -104,8 +104,16 @@ const Doctordetail = () => {
         </View>
 
         <View style={styles.iconContainer}>
+          <Pressable
+           onPress={()=>{navigation.navigate("Appointment",{doctorId:doctorId})}}
+          >
           <AntDesign name="calendar" size={24} color="black" />
+          </Pressable>
+          <Pressable
+          onPress={()=>{navigation.navigate("Message")}}
+          >
           <AntDesign name="message1" size={24} color="black" />
+          </Pressable>
           <MaterialIcons name="favorite-border" size={24} color="black" />
         </View>
 
