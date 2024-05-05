@@ -39,7 +39,7 @@ function Signin({ navigation }: any) {
 
   const onSubmit = async (inputs: inputs) => {
     try {
-      const { data } = await axios.post("http://192.168.1.11:3000/api/patients/signin", {
+      const { data } = await axios.post("http://192.168.10.11:3000/api/patients/signin", {
         email: inputs.Email,
         password: inputs.Password
       }) 

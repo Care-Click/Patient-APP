@@ -15,6 +15,7 @@ import Requests from "./components/Requests";
 import Profile from "./components/Profile";
 import Doctordetail from "./components/Doctordetail";
 import Alldoctors from "./components/Alldoctors";
+import Messages from "./components/Message";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,6 +59,20 @@ const App = () => {
        <Tab.Screen
         name="Profile"
         component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+               <MaterialCommunityIcons name="face-man-profile" size={24} color="#F26268"/>
+              </View>
+            );
+          },
+        }}
+      />
+
+<Tab.Screen
+        name="Message"
+        component={Messages}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
