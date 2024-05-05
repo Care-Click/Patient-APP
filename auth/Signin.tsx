@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as yup from "yup";
 import axios from 'axios';
+import config from '../assets/url.js';
 
 YupPassword(yup)
 
@@ -39,7 +40,7 @@ function Signin({ navigation }: any) {
 
   const onSubmit = async (inputs: inputs) => {
     try {
-      const { data } = await axios.post("http://192.168.10.11:3000/api/patients/signin", {
+      const { data } = await axios.post(`${config.localhost}/api/patients/signin`, {
         email: inputs.Email,
         password: inputs.Password
       }) 
