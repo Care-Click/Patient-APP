@@ -15,7 +15,7 @@ YupPassword(yup)
 
 
 
- function Signin({navigation}:any) {
+ function Setprofile({navigation}:any) {
 
   interface inputs {
     email:string,
@@ -51,8 +51,8 @@ YupPassword(yup)
 
       // If the user didn't cancel image picking
       if (result) {
-        setSelectedImage(result.assets[0].uri); // Store the URI for display
-        return result.assets[0].uri; // Return the URI for later use
+        setSelectedImage(result.assets[0].uri); 
+        return result.assets[0].uri; 
       }
       
   };
@@ -98,6 +98,7 @@ const schema = yup.object().shape({
     },
   })
   const onSubmit = async (inputs:any) => {
+
     let formData = new FormData();
     formData.append('email',email)
     formData.append('password',password)
@@ -112,6 +113,7 @@ const schema = yup.object().shape({
       type: 'image/jpeg', // Adjust the type based on your image type
     });
     
+
     try {
       const { data } = await axios.post(
         "http://192.168.10.11:3000/api/patients/signup",
@@ -202,7 +204,7 @@ const schema = yup.object().shape({
   </View>
   )
 }
-export default Signin
+export default Setprofile
 
 const styles = {
   container: {

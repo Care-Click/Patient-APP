@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as yup from "yup";
 import axios from 'axios';
+import config from '../assets/url.js';
 
 YupPassword(yup)
 
@@ -39,7 +40,7 @@ function Signin({ navigation }: any) {
 
   const onSubmit = async (inputs: inputs) => {
     try {
-      const { data } = await axios.post("http://192.168.10.11:3000/api/patients/signin", {
+      const { data } = await axios.post(`${config.localhost}/api/patients/signin`, {
         email: inputs.Email,
         password: inputs.Password
       }) 
@@ -53,8 +54,8 @@ function Signin({ navigation }: any) {
 
   return (
     <View style={styles.maincontainer}>
-      <View>
-        <View>
+      
+        <View style={styles.logocontainer}>
           <Image
             style={styles.logo}
             source={require("../assets/image/logo.png")}
@@ -83,7 +84,7 @@ function Signin({ navigation }: any) {
           )}
           name="Email"
         />
-        {errors.Email && <Text>{errors.Email.message}</Text>}
+        {errors.Email && <Text style={styles.erroremail}>{errors.Email.message}</Text>}
 
         <View style={styles.passwordcontainer}>
           <Text style={styles.password}>
@@ -109,15 +110,18 @@ function Signin({ navigation }: any) {
           />
           {errors.Password && <Text style={styles.errorpassword}>{errors.Password.message}</Text>}
         </View>
-
-        <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-
+      <View style={styles.button} >
+        <Pressable  onPress={handleSubmit(onSubmit)} >
+          <Text  style={styles.buttontext}>Submit</Text>
+        </Pressable>
+        
+      </View>
         <View style={styles.position}>
           <Text style={styles.account}>
-            Don't have an account? <Pressable onPress={() => { navigation.navigate("Signup") }} ><Text>sign up</Text></Pressable>
+            Don't have an account? <Pressable onPress={() => { navigation.navigate("Signup") }} ><Text style={styles.navigation}>SIGN UP</Text></Pressable>
           </Text>
         </View>
-      </View>
+        
     </View>
   )
 }
@@ -159,26 +163,71 @@ const styles = StyleSheet.create({
   },
   position: {
     marginTop: 50,
-    marginLeft: 20
+    marginLeft: 10,
+    
+    
+
   },
   account: {
     color: "#888888",
-    fontSize: 15,
+    fontSize: 20,
   },
   password: {
-    marginLeft: 15,
+    marginLeft: 25,
     color: "grey",
   },
   maincontainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10
+    marginTop: 10,
+  
+    borderColor:"black",
+    borderStyle:"solid",
+    
+    
+    
   },
   passwordcontainer: {
     marginTop: 20
   },
   errorpassword: {
-    marginLeft: 60
+    marginLeft: 100,
+    color : "red"
+  },
+  erroremail :{
+color:"red"
+  },
+
+  button: {
+    marginTop : 50,
+    backgroundColor: "#1DBED3",
+    width : 200,
+    height : 25,
+    borderRadius : 30
+
+  },
+
+  buttontext :{
+    textAlign : "center",
+    marginTop : 6,
+    color : "white"
+    
+  },
+
+  navigation : {
+    marginTop: "auto",
+    fontSize: 17,
+    color:"#1DBED3"
+  },
+
+  logocontainer : {
+  marginBottom : 40 , 
+  marginRight : 50
+
   }
+
+
+
+  
 });

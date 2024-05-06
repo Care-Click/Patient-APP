@@ -16,14 +16,15 @@ import Doctordetail from "./components/Doctordetail";
 import Alldoctors from "./components/Alldoctors";
 import Messages from "./components/Message";
 import AppointmentCalendar from "./components/Appointment ";
+import Setprofile from "./components/SetProfile";
 import { MaterialIcons } from '@expo/vector-icons';
-
+import Landing from "./components/Landing";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const App = () => {
   const TabNavigator = () => (
     <Tab.Navigator
-    initialRouteName="Chat"
+    
       screenOptions={{
         headerShown: false,
       }}
@@ -106,12 +107,14 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
+     
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Signin"
+        initialRouteName="Landing"
       >
         {/* <Stack.Screen name="Signup" component={Signup} /> */}
+        <Stack.Screen name="Landing" component={Landing}/>
         <Stack.Screen name="Signin" component={Signin} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Setprofile" component={Setprofile} />

@@ -10,6 +10,7 @@ import {
 import Dialog from "react-native-dialog";
 import axios from "../assets/axios_config";
 import Alldoctors from "./Alldoctors";
+import config from "../assets/url.js";
 
 
 interface Doctor {
@@ -43,7 +44,7 @@ function Patient({ navigation }: any) {
     try {
 
       await axios.post(
-        `http://192.168.10.11:3000/api/requests/emergencyRequest`, {message }
+        `${config.localhost}/api/requests/emergencyRequest`, {message }
        
         
       );
@@ -56,7 +57,7 @@ function Patient({ navigation }: any) {
     try {
 
       const result = await axios.get(
-        `http://192.168.10.11:3000/api/patients/getNearByDoctors`
+        `${config.localhost}/api/patients/getNearByDoctors`
       );
       setData(result.data);
     } catch (error) {
