@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, FlatList, Pressable, TextInput } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from 'react-native-picker-select';
+import config from '../assets/url.js';
 
 interface Appointment {
   id: number;
@@ -23,7 +24,7 @@ getDocApp()
   const getDocApp=async()=>{
     try {
       const { data } = await axios.get(
-        `http://192.168.10.11:3000/api/appointment/getAppointements/${doctorId}`
+        `${config.localhost}/api/appointment/getAppointements/${doctorId}`
       );
       
       setAppointments(data);
