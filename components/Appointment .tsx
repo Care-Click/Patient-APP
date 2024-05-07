@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, FlatList, Pressable, TextInput } from "react-native";
 import { Calendar } from "react-native-calendars";
 import RNPickerSelect from 'react-native-picker-select';
+import config from "../assets/url";
 
 interface Appointment {
   id: number;
@@ -82,7 +83,7 @@ let dateTime=selectedDate+"T"+hour+':00:00Z'
 
 let PatientName="Amine laarif"
 
-      const response = await axios.post(`http://192.168.10.11:3000/api/appointment/addAppointement/${doctorId}`,{dateTime,description:newMessageContent,PatientName} )
+      const response = await axios.post(`${config.localhost}/api/appointment/addAppointement/${doctorId}`,{dateTime,description:newMessageContent,PatientName} )
       alert('New appointment created:', response.data);
  
     } 

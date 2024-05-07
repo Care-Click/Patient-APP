@@ -10,6 +10,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import * as yup from "yup";
 import axios from '../assets/axios_config';
 import * as ImagePicker from "expo-image-picker";
+import config from '../assets/url';
 
 YupPassword(yup)
 
@@ -116,7 +117,7 @@ const schema = yup.object().shape({
 
     try {
       const { data } = await axios.post(
-        "http://192.168.10.11:3000/api/patients/signup",
+        `${config.localhost}/api/patients/signup`,
        formData,{ headers: { "Content-Type": "multipart/form-data" } }
       );
       navigation.navigate("Signin")

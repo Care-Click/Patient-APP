@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, ActivityIndicator, Pressable } from "rea
 import axios from "../assets/axios_config";
 import { useRoute } from "@react-navigation/native";
 import { AntDesign, MaterialIcons, Fontisto, Entypo } from "@expo/vector-icons";
+import config from "../assets/url";
 
 interface Location {
   place: {
@@ -13,6 +14,7 @@ interface Location {
 }
 
 interface DoctorDetails {
+  doctorId:string | null
   FullName: string;
   speciality: string;
   phone_number: string;
@@ -26,18 +28,19 @@ interface Params {
   Doctordetail: { doctorId: string };
 }
 
-const Doctordetail = ({navigation}:any) => {
+const Doctordetail = ({ navigation }: any) => {
   const route = useRoute();
   const { doctorId } = route.params as Params["Doctordetail"];
 
   const [doctorDetails, setDoctorDetails] = useState<DoctorDetails | null>();
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.10.11:3000/api/patients/getOneDoctor/${doctorId}`
+          `${config.localhost}/api/patients/getOneDoctor/${doctorId}`
         );
 
         let copy = response.data;
@@ -50,8 +53,41 @@ const Doctordetail = ({navigation}:any) => {
       }
     };
 
+    const checkIfFavorite = async () => {
+      try {
+        // Fetch favorites list
+        const response = await axios.get(`${config.localhost}/api/patients/getInfo`);
+        const favoriteDoctors = response.data.favoriteDoctors;
+        
+        // Check if current doctor is in favorites list
+        const isFavorite = favoriteDoctors.some((doc: DoctorDetails) => doc.doctorId === doctorId);
+        setIsFavorite(isFavorite);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchDoctorDetails();
+    checkIfFavorite()
   }, [doctorId]);
+
+  const addToFavorite = async () => {
+    try {
+      if (isFavorite) {
+        // If already in favorites, remove from favorites
+        await axios.post(`${config.localhost}/api/patients/addFavoriteDoctor/${doctorId}`);
+        setIsFavorite(false);
+      } else {
+        // If not in favorites, add to favorites
+        await axios.post(`${config.localhost}/api/patients/addFavoriteDoctor/${doctorId}`);
+        setIsFavorite(true);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -105,16 +141,24 @@ const Doctordetail = ({navigation}:any) => {
 
         <View style={styles.iconContainer}>
           <Pressable
-           onPress={()=>{navigation.navigate("Appointment",{doctorId:doctorId})}}
+            onPress={() => { navigation.navigate("Appointment", { doctorId: doctorId }) }}
           >
-          <AntDesign name="calendar" size={24} color="black" />
+            <AntDesign name="calendar" size={24} color="black" />
           </Pressable>
           <Pressable
-          onPress={()=>{navigation.navigate("Message")}}
+            onPress={() => { navigation.navigate("Message") }}
           >
-          <AntDesign name="message1" size={24} color="black" />
+            <AntDesign name="message1" size={24} color="black" />
           </Pressable>
-          <MaterialIcons name="favorite-border" size={24} color="black" />
+          <Pressable
+            onPress={() => { addToFavorite() }}
+          >
+            {isFavorite ? (
+              <MaterialIcons name="favorite" size={24} color="red" />
+            ) : (
+              <MaterialIcons name="favorite-border" size={24} color="black" />
+            )}
+          </Pressable>
         </View>
 
         <Text style={styles.contactHeader}>Contact Information : </Text>
