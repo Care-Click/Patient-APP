@@ -106,7 +106,7 @@ const schema = yup.object().shape({
 
 <View style={styles.passwordcontainer} >
       <Text style={styles.password}>
-          Password
+            Confirm  Password
          </Text>
       <Controller
         control={control}
@@ -126,12 +126,15 @@ const schema = yup.object().shape({
         )}
         name="ConfirmPassword"
       />
-        {errors.ConfirmPassword && <Text style={styles.errorpassword} >{errors.ConfirmPassword.message}</Text>}
+        {errors.ConfirmPassword && <Text style={styles.errorpasswordConfirmation} >{errors.ConfirmPassword.message}</Text>}
 </View>
 
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-       
+<View style={styles.button2} >
+        <Pressable  onPress={handleSubmit(onSubmit)} >
+          <Text  style={styles.buttontext}>Submit</Text>
+        </Pressable>
+       </View>
         <View style ={styles.position} >
       <Text style={styles.account}>
         Don't have an accout ?  <Pressable  onPress={()=>{navigation.navigate("Signin",)}}   ><Text style={styles.navigation}>sign in</Text></Pressable>
@@ -222,7 +225,7 @@ marginTop : 10
   elevation: 3, // for Android
 },
 buttonText: {
-  marginTop: 18,
+  marginTop: 20,
   color: 'white',
   fontWeight: 'bold',
   textTransform: 'uppercase',
@@ -235,7 +238,33 @@ marginTop : 20
 },
  
 errorpassword : {
-  marginLeft : 60
-}
+  marginLeft : 70
+},
+
+errorpasswordConfirmation :{
+  marginLeft : 110
+
+},
+
+
+button2: {
+  marginTop : 50,
+  backgroundColor: "#1DBED3",
+  width : 200,
+  height : 25,
+  borderRadius : 30
+
+},
+
+buttontext :{
+  textAlign : "center",
+  marginTop : 6,
+  color : "white"
+  
+},
+
+
+
+
     
   });
