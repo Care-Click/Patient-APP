@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, TextInput, Button, TouchableOpacity } from 'react-native'; // Import TouchableOpacity
 import axios from '../assets/axios_config';
 import { FontAwesome } from '@expo/vector-icons';
+import config from '../assets/url';
 
 interface Doctor {
   id: number;
@@ -16,7 +17,7 @@ const Alldoctors = ({ navigation }: any) => {
   const fetchDoctors = async (speciality: string) => {
     try {
       if (speciality) {
-        const response = await axios.get(`http://192.168.10.11:3000/api/patients/search/${speciality}`);
+        const response = await axios.get(`${config.localhost}/api/patients/search/${speciality}`);
         setDoctors(response.data);
       }
       else setDoctors([]);

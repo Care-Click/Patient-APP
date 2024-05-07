@@ -13,6 +13,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import config from "../assets/url.js";
 
 interface Doctor {
   id: string;
@@ -61,7 +62,7 @@ const Messages = () => {
   const fetchMessages = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.137.125:3000/api/messages/messagesPatient"
+        `${config.localhost}/api/messages/messagesPatient`
       );
       setMessagesReceived(response.data);
     } catch (error) {
@@ -77,7 +78,7 @@ const Messages = () => {
 
     try {
       const { data } = await axios.get(
-        `http://192.168.137.125:3000/api/messages/messageP/${doctorId}`
+        `${config.localhost}/api/messages/messageP/${doctorId}`
       );
       setMessageList(data.messages);
       setDoctor(data.doctor);
@@ -87,7 +88,7 @@ const Messages = () => {
 
       const newInterval = setInterval(async () => {
         const { data } = await axios.get(
-          `http://192.168.137.125:3000/api/messages/messageP/${doctorId}`
+          `${config.localhost}/api/messages/messageP/${doctorId}`
         );
         setMessageList(data.messages);  
       }, 15000);  
@@ -104,7 +105,7 @@ const Messages = () => {
     if (!doctor) return;
     try {
       const response = await axios.post(
-        "http://192.168.137.125:3000/api/messages/patient/send",
+        `${config.localhost}/api/messages/patient/send`,
         {
           doctorId: doctor.id,
           content: newMessageContent,
