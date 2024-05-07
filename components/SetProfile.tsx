@@ -10,6 +10,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import * as yup from "yup";
 import axios from '../assets/axios_config';
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
 import config from '../assets/url';
 
 YupPassword(yup)
@@ -35,33 +36,51 @@ YupPassword(yup)
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [genre, setgenre] = useState("");
-  const [loca, setLocation] = useState({
+  const [loca, setLocation] = useState<{
+    longitude: number;
+    latitude: number;
+    place: any;
+  }>({
     longitude: 0,
     latitude: 0,
     place: {},
   });
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
   
   const handlePickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
+      base64: true,
       quality: 1,
     });
-
-      // If the user didn't cancel image picking
-      if (result) {
-        setSelectedImage(result.assets[0].uri); 
-        return result.assets[0].uri; 
-      }
-      
+  
+    // If the user didn't cancel image picking
+    if (!result.canceled) {
+      const localUri = result.assets[0].uri;
+  
+      // Convert image to Blob
+      const imageBlob = await FileSystem.readAsStringAsync(localUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      const image = {
+        uri: localUri,
+        type: 'image/jpg', 
+        blob: imageBlob, 
+      };
+  
+      setSelectedImage(localUri); // Store the URI for display
+      return image; // Return the object with URI and Blob for later use
+    }
   };
+
 
   
 
 
-  const handleDateChange = (event: any, date: any) => {
+  const handleDateChange = (date: any) => {
     if (date) {
       setSelectedDate(date);
     }
@@ -107,12 +126,8 @@ const schema = yup.object().shape({
     formData.append('FullName',inputs.FullName)
     formData.append('phone_number',inputs.PhoneNumber)
     formData.append('Gender',genre)
-    formData.append('location',loca)
-    formData.append('image', {
-      uri: selectedImage,
-      name: 'image.jpg',
-      type: 'image/jpeg', // Adjust the type based on your image type
-    });
+    formData.append('location',JSON.stringify(loca))
+    formData.append('image', selectedImage);
     
 
     try {
@@ -197,7 +212,9 @@ const schema = yup.object().shape({
         style={styles.dropdown}
       />
     </View>
-    <Button title="Sign Up" onPress={handleSubmit(onSubmit)} style={styles.signupButton} />
+    <View style={styles.signupButton}>
+    <Button title="Sign Up" onPress={handleSubmit(onSubmit)} />
+    </View>
     <Pressable onPress={() => navigation.navigate("Signin")} style={styles.signinLink}>
       <Text style={styles.signinText}>If you already have an account, </Text>
       <Text style={styles.signinText}>sign in</Text>
@@ -207,7 +224,7 @@ const schema = yup.object().shape({
 }
 export default Setprofile
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -234,8 +251,9 @@ const styles = {
     color: 'white',
   },
   imagePreview: {
-    width: 200,
-    height: 200,
+    borderRadius: 100,
+    width: 150,
+    height: 150,
     resizeMode: 'cover',
     marginBottom: 10,
   },
@@ -280,4 +298,4 @@ const styles = {
   signinText: {
     marginRight: 5,
   },
-};
+});
