@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable,Image } from 'react-native';
 import axiosInstance from '../assets/axios_config';
+import config from '../assets/url';
 
 interface Doctors {
   id: number | null
@@ -24,7 +25,7 @@ const Request = ({ navigation }: any) => {
   const GetRequests = async () => {
 
     try {
-      const result = await axiosInstance(`http://192.168.10.11:3000/api/patients/getPatientRequests`)
+      const result = await axiosInstance(`${config.localhost}/api/patients/getPatientRequests`)
       setData(result.data)
     } catch (error) {
       console.log(error)
