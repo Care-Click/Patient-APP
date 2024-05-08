@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, Button, Pressable } from 'react-native';
 import { FontAwesome, MaterialIcons, Feather, EvilIcons, Ionicons } from '@expo/vector-icons';
 import axios from '../assets/axios_config.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm, Controller } from 'react-hook-form';
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
+import config from '../assets/url.js';
 
 interface Patient {
   FullName: string
@@ -30,17 +32,25 @@ interface Location {
   }
 }
 
+interface data {
+  FullName: string
+  phone_number: string
+  date_of_birth: string
+  email: string
+}
 
 
-const Profile = ({navigation}:any) => {
+const Profile = ({ navigation }: any) => {
   const { control, handleSubmit } = useForm();
   const [selectedTab, setSelectedTab] = useState<string>('Personal Info');
   const [patient, setPatient] = useState<Patient>();
-  const [location, setLocation] = useState<Location>({place:{city:"",country:"",district:""}});
+  const [location, setLocation] = useState<Location>({ place: { city: "", country: "", district: "" } });
   const [medinfo, setMedinfo] = useState<Info>();
   const selectedTabRef = useRef<string>('Personal Info');
   const [isFocused, setIsFocused] = useState(false)
-  const [image, setImage] = useState({})
+  const [image, setImage] = useState("")
+  const [favoriteDoctors, setFavoriteDoctors] = useState<any[]>([]);
+
 
 
   const handlePickImage = async () => {
@@ -48,41 +58,55 @@ const Profile = ({navigation}:any) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
+      base64: true,
       quality: 1,
     });
 
-      // If the user didn't cancel image picking
-      if (!result.canceled) {
-        setImage(result.assets[0].uri); // Store the URI for display
-        return result.assets[0].uri; // Return the URI for later use
-      }
-      
+    // If the user didn't cancel image picking
+    if (!result.canceled) {
+      const localUri = result.assets[0].uri;
+
+      // Convert image to Blob
+      const imageBlob = await FileSystem.readAsStringAsync(localUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const image = {
+        uri: localUri,
+        type: 'image/jpg',
+        blob: imageBlob,
+      };
+
+      setImage(localUri); // Store the URI for display
+      return image; // Return the object with URI and Blob for later use
+    }
   };
 
 
   useEffect(() => {
     selectedTabRef.current = selectedTab;
     getPatient();
-  }, [selectedTab,image]);
+  }, [selectedTab]);
 
   const getPatient = async () => {
     try {
-      const { data } = await axios.get(`http://192.168.10.11:3000/api/patients/getInfo`);
+      const { data } = await axios.get(`${config.localhost}/api/patients/getInfo`);
+
       data.date_of_birth = new Date(data.date_of_birth).toLocaleDateString()
       setPatient(data);
       setMedinfo(data.medicalInfo);
       setLocation(JSON.parse(data.location));
-      
-      
+      setFavoriteDoctors(data.favoriteDoctors);
+
     } catch (error) {
       console.log(error);
     }
   };
 
-const logout = async ()=>{
-await AsyncStorage.clear()
-navigation.navigate("Signin")
-}
+  const logout = async () => {
+    await AsyncStorage.clear()
+    navigation.navigate("Signin")
+  }
 
   const handleTabPress = (tabName: string) => {
     setSelectedTab(tabName);
@@ -92,25 +116,18 @@ navigation.navigate("Signin")
 
     let formData = new FormData();
     formData.append('data', data)
-    formData.append('image', {
-      uri: image,
-      name: 'image.jpg',
-      type: 'image/jpg', // Adjust the type based on your image type
-    });
+    formData.append('image', image);
 
     try {
+      await axios.put(`${config.localhost}/api/patients/updateProfile`, formData, { headers: { "Content-Type": "multipart/form-data" } }),
 
-    
-      
-      await axios.put(`http://192.168.10.11:3000/api/patients/updateProfile`,formData , { headers: { "Content-Type": "multipart/form-data" } }),
-
-        setPatient(patient);
-      getPatient()
+        getPatient()
       alert('Saved Successfuly')
     } catch (error) {
       console.log(error);
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -148,6 +165,12 @@ navigation.navigate("Signin")
           onPress={() => handleTabPress('Medical Info')}
         >
           <Text style={styles.tabText}>Medical Info</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'Favorite Doctors' && styles.selectedTab]}
+          onPress={() => handleTabPress('Favorite Doctors')}
+        >
+          <Text style={styles.tabText}>Favorite Doctors</Text>
         </TouchableOpacity>
       </View>
 
@@ -239,7 +262,7 @@ navigation.navigate("Signin")
 
             </View>
             <View style={styles.iconWrapper}>
-              <EvilIcons name="calendar" style={{ marginRight: 10 }} size={40} color="#F26268" />
+              <EvilIcons name="calendar" style={{ marginRight: 10 }} size={45} color="#F26268" />
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -284,15 +307,38 @@ navigation.navigate("Signin")
             </View>
             <View style={styles.iconWrapper}>
               <MaterialIcons style={{ marginRight: 10 }} name="place" size={35} color="#F26268" />
-            
-               <Text> {`${location?.place?.city}-${location?.place?.country}-${location?.place?.district}`}</Text>
-            
+
+              <Text style={styles.iconText}> {`${location?.place?.city}-${location?.place?.country}-${location?.place?.district}`}</Text>
+
             </View>
           </View>
-          <View style={styles.saveButtonContainer}>
-            <Button title="Save" onPress={handleSubmit(onSubmit)} />
-            <Button title='Logout' onPress={()=>logout()}/>
+          <View style={styles.saveButton}>
+            <Pressable onPress={handleSubmit(onSubmit)}>
+              <Text style={styles.buttontext}>Save</Text>
+            </Pressable>
           </View>
+          <View style={styles.logoutButton}>
+            <Pressable onPress={() => logout()}>
+              <Text style={styles.buttontext}>LogOut</Text>
+            </Pressable>
+          </View>
+
+        </View>
+      )}
+      {/* Content for favorite doctors tab */}
+      {selectedTabRef.current === 'Favorite Doctors' && (
+        <View style={styles.favoriteDoctorsContainer}>
+          {/* Render favorite doctors here */}
+          {favoriteDoctors.map((doctor, index) => (
+            <TouchableOpacity key={index} onPress={() => navigation.navigate('Doctordetail', { doctorId: doctor.doctor.id })}>
+              <View style={styles.doctorItem}>
+                <View>
+                  <Text style={styles.fullName}>{doctor.doctor.FullName}</Text>
+                  <Text style={styles.email}>{doctor.doctor.email}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
       )}
     </View>
@@ -302,6 +348,28 @@ navigation.navigate("Signin")
 export default Profile;
 
 const styles = StyleSheet.create({
+  favoriteDoctorsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  doctorItem: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#ECECEC',
+    borderRadius: 5,
+  },
+  fullName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  email: {
+    fontSize: 14,
+    color: '#555',
+  },
+
   container: {
     flex: 1,
     alignItems: 'center',
@@ -355,9 +423,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   iconContainer: {
+    marginTop: 15,
     backgroundColor: "#F0FFFF",
     width: 380,
-    height: 500,
+    height: 430,
     borderWidth: 2,
     borderColor: '#1DBED3',
     padding: 10,
@@ -379,18 +448,28 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   iconText: {
-    marginLeft: 10,
     fontSize: 18,
     color: 'black',
   },
-  saveButtonContainer: {
-    width: 80,
-    height: 40,
-    position: 'absolute',
-    bottom: 20,
+  saveButton: {
+    marginTop: 30,
     backgroundColor: "#1DBED3",
-    borderRadius: 10,
-    borderColor: '#1DBED3',
+    width: 150,
+    height: 25,
+    borderRadius: 30
+  },
+  logoutButton:{
+    marginTop: 10,
+    backgroundColor: "#F26268",
+    width: 150,
+    height: 25,
+    borderRadius: 30
+  },
+  buttontext: {
+    textAlign: "center",
+    marginTop: 6,
+    color: "white"
+
   },
   profileContainer: {
     marginRight: 250
