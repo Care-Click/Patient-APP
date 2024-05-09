@@ -329,13 +329,17 @@ const Profile = ({ navigation }: any) => {
       {selectedTabRef.current === 'Favorite Doctors' && (
         <View style={styles.favoriteDoctorsContainer}>
           {/* Render favorite doctors here */}
-          {favoriteDoctors.map((doctor, index) => (
-            <TouchableOpacity key={index} onPress={() => navigation.navigate('Doctordetail', { doctorId: doctor.doctor.id })}>
-              <View style={styles.doctorItem}>
-                <View>
-                  <Text style={styles.fullName}>{doctor.doctor.FullName}</Text>
-                  <Text style={styles.email}>{doctor.doctor.email}</Text>
-                </View>
+          {favoriteDoctors.map((doctor) => (
+            <TouchableOpacity
+              key={doctor.doctor.id}
+              onPress={() => navigation.navigate('Doctordetail', { doctorId: doctor.doctor.id })}
+              style={styles.doctorItem}>
+              <View style={styles.detail} >
+                <Image source={{ uri: doctor.doctor.profile_picture }} style={styles.doctorImage} />
+                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.doctorName}>{doctor.doctor.FullName}</Text>
+
+                <FontAwesome name="phone" size={24} color="red" style={styles.phoneIcon} />
+
               </View>
             </TouchableOpacity>
           ))}
@@ -351,25 +355,49 @@ const styles = StyleSheet.create({
   favoriteDoctorsContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
   },
   doctorItem: {
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: '#ECECEC',
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderRadius: 17,
+    padding: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    width: 270
   },
-  fullName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+  doctorImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    marginRight:10
   },
-  email: {
+  doctorName: {
     fontSize: 14,
-    color: '#555',
+    fontWeight: 'bold',
+    marginTop: 10
+
+  },
+  phoneIcon: {
+    marginTop: 10,
+    marginLeft: 10
   },
 
+  detail: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: "space-around",
+    // alignContent: "center",
+    maxWidth: 250
+  }
+  ,
   container: {
     flex: 1,
     alignItems: 'center',
@@ -458,7 +486,7 @@ const styles = StyleSheet.create({
     height: 25,
     borderRadius: 30
   },
-  logoutButton:{
+  logoutButton: {
     marginTop: 10,
     backgroundColor: "#F26268",
     width: 150,
