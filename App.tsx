@@ -13,12 +13,12 @@ import Patient from "./components/Patient";
 import Requests from "./components/Requests";
 import Profile from "./components/Profile";
 import Doctordetail from "./components/Doctordetail";
-import Alldoctors from "./components/Alldoctors";
 import Messages from "./components/Message";
 import AppointmentCalendar from "./components/Appointment ";
 import Setprofile from "./components/SetProfile";
 import { MaterialIcons } from '@expo/vector-icons';
 import Landing from "./components/Landing";
+import Chat from "./components/Chat";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const App = () => {
@@ -120,6 +120,8 @@ const App = () => {
         <Stack.Screen name="Setprofile" component={Setprofile} />
         <Stack.Screen name="Patient" component={TabNavigator} />
         <Stack.Screen name="Doctordetail" component={Doctordetail} />
+        <Stack.Screen name="chat" component={Chat} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

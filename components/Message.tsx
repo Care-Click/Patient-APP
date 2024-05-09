@@ -1,192 +1,73 @@
 import React, { useState, useEffect } from "react";
 import axios from "../assets/axios_config.js";
-import moment from 'moment';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Button,
-  Pressable,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import config from "../assets/url.js";
 
 interface Doctor {
-  id: string;
   fullName: string;
   profile_picture: string;
 }
 
-interface Patient {
-  id: string;
-  fullName: string;
-  profile_picture: string;
-}
-
-interface Message {
-  id: string;
-  content: string;
-  doctor: Doctor;
-  patient: Patient|null;
-  createdAt : string;
-  toPatientId : number;
-  
-}
-
-const Messages = () => {
-  const [messagesReceived, setMessagesReceived] = useState<Message[]>([]);
-  const [messageList, setMessageList] = useState<Message[]>([]);
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [newMessageContent, setNewMessageContent] = useState("");
-  const [showScroll, setShowScroll] = useState(false);
-  const [showInput,setShowInput] = useState(false)
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+const Messages = ({ navigation }: any) => {
+  const [conversations, setConversations] = useState([
+    { doctor: { profile_picture: "", FullName: "" } },
+  ]);
 
   useEffect(() => {
-    fetchMessages();
+    getPatientConversations();
   }, []);
-
-  useEffect(() => {
-    return () => {
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-      }
-    };
-  }, [pollingInterval]);
-
-  const fetchMessages = async () => {
+  const getPatientConversations = async () => {
     try {
       const response = await axios.get(
-        `${config.localhost}/api/messages/messagesPatient`
+        `${config.localhost}/api/patients/getInfo`
       );
-      setMessagesReceived(response.data);
-    } catch (error) {
-      console.error("Failed to fetch messages:", error);
-    }
-  };
 
-  const handleJoinConversation = async (doctorId: string) => {
-    console.log("Joining conversation with doctor ID:", doctorId);
-    if (pollingInterval) {
-      clearInterval(pollingInterval);  
-    }
-
-    try {
       const { data } = await axios.get(
-        `${config.localhost}/api/messages/messageP/${doctorId}`
+        `${config.localhost}/api/conversations/${response.data?.id}/Allconversations`
       );
-      setMessageList(data.messages);
-      setDoctor(data.doctor);
-      setPatient(data.patient);
-      setShowScroll(!showScroll);
-      setShowInput(!showInput);
 
-      const newInterval = setInterval(async () => {
-        const { data } = await axios.get(
-          `${config.localhost}/api/messages/messageP/${doctorId}`
-        );
-        setMessageList(data.messages);  
-      }, 15000);  
-
-      setPollingInterval(newInterval);
+      setConversations(data);
     } catch (error) {
       console.error("Failed to fetch messages:", error);
-    }
-  };
-
-  
-
-  const sendMessageToDoctor = async () => {
-    if (!doctor) return;
-    try {
-      const response = await axios.post(
-        `${config.localhost}/api/messages/patient/send`,
-        {
-          doctorId: doctor.id,
-          content: newMessageContent,
-        }
-      );
-      setMessageList((list) => [...list, response.data]);
-      setNewMessageContent("");
-      setShowScroll(!showScroll)
-    } catch (error) {
-      console.error("Failed to send message:", error);
     }
   };
 
   return (
     <View style={styles.container}>
-    <View style={styles.msgcont}>
-      {messagesReceived.map((msg, i) => (
-        <Pressable key={i} onPress={() => handleJoinConversation(msg.doctor.id)}>
-          <View style={styles.messageContainer}>
-          <Image
-  style={{ width: 50, height: 50 }}
-  source={{ uri: msg.doctor.profile_picture }}
-/>
-            <Text>{msg.content}</Text>
-            <Text style={styles.messageText}>{moment(msg.createdAt).format('DD/MM HH:mm')}</Text>
-          </View>
-        </Pressable>
-      ))}
-      { showScroll && <ScrollView style={styles.scrollView}>
-      <View style={styles.chatBox}>
-        {messageList.map((msg, i) => (
-          <View
-            key={i}
-            style={[
-              styles.messageContainer,
-              {
-                justifyContent: msg.toPatientId !== null ? "flex-end" : "flex-start",
-              },
-            ]}
-          >
-            <Image
-              style={styles.avatar}
-              source={{ uri: msg.toPatientId !== null ? doctor?.profile_picture : patient?.profile_picture }}
-            />
-            <View
-              style={[
-                styles.messageBubble,
-                {
-                  backgroundColor: msg.toPatientId !== null ? "#BEE3F8" : "#F7FAFC",
-                },
-              ]}
+      <View style={styles.msgcont}>
+        {conversations.length !== 0 ? (
+          conversations.map((conversation, i) => (
+            <Pressable
+              key={i}
+              onPress={() => {
+                navigation.navigate("chat", {
+                  conversationId: conversation.id,
+                  doctorId: conversation.doctorId,
+                  patientId: conversation.patientId,
+                });
+              }}
             >
-              <Text style={styles.messageText}>{msg.content}</Text>
-              <Text style={styles.messageText}>{moment(msg.createdAt).format('DD/MM HH:mm')}</Text>
-            </View>
-          </View>
-        ))}
+              <View style={styles.messageContainer}>
+                <Image
+                  style={{ width: 50, height: 50 }}
+                  source={{ uri: conversation.doctor.profile_picture }}
+                />
+                <Text>{conversation.doctor.FullName}</Text>
+              </View>
+            </Pressable>
+          ))
+        ) : (
+          <Text>not conversation was found</Text>
+        )}
       </View>
-      </ScrollView>}
-
-      { showInput && <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type your message..."
-          value={newMessageContent}
-          onChangeText={(text) => setNewMessageContent(text)}
-        />
-        <Pressable onPress={sendMessageToDoctor}>
-          <Text>Send</Text>
-        </Pressable>
-      </View>}
-    </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  msgcont :{
-    marginTop : 70,
+  msgcont: {
+    marginTop: 70,
     //marginRight:80,
-  
   },
   container: {
     flex: 1,
@@ -202,16 +83,14 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     //flex: 1,
-    backgroundColor: '#F7F7F7',
-    
+    backgroundColor: "#F7F7F7",
   },
   messageContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 1,
-    marginTop :7,
+    marginTop: 7,
     width: 270,
-    
   },
   avatar: {
     width: 40,
@@ -236,7 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#EAEAEA",
-    width :'auto'
+    width: "auto",
   },
   input: {
     //flex: 1,
