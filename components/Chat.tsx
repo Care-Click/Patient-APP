@@ -13,25 +13,29 @@ import { useRoute } from "@react-navigation/native";
 import io from "socket.io-client";
 import config from "../assets/url";
 
-const Chat = ({ navigation }:any) => {
-  const socket = io("ws://localhost:3000");
+  const Chat = ({ navigation }:any) => {
+  const socket = io("http://192.168.1.12:3000");
 
   const route = useRoute();
   const scrollRef = useRef();
-  const { conversationId } = route.params;
+  const { conversationId,profileDoc,profilePat } = route.params;
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
+    getMessages()
+    socket.on('connect', () => {
+      console.log("connected")
       socket.emit("joinConversation",conversationId);
-      getMessages()
+    })
       socket.on("newMessage", (data) => {
-        setMessages(...messages,data)
+        
+        console.log(data);
+        
+        setMessages([...messages,data])
       });
    }, []);
-   useEffect(() => {
-   
-  }, []);
+
 
   const getMessages = async () => {
     try {
@@ -76,25 +80,28 @@ const Chat = ({ navigation }:any) => {
         {messages.map((msg, i) => (
           <View
             key={i}
-            style={
-              msg.sender === "Doctor"
-                ? styles.doctorMessageContainer
-                : styles.patientMessageContainer
-            }
-          >
-            {msg.sender === "Doctor" && (
+            >
+            {msg.sender === "Doctor" && (<View  style={styles.doctorMessageContainer}>
               <Image
-                source={{ uri: msg.conversation?.doctor.profile_picture }}
+                source={{ uri: profileDoc }}
                 style={styles.profileImage}
               />
+              <Text style={styles.messageText}>{msg.content}</Text>
+
+            </View>
             )}
-            <Text style={styles.messageText}>{msg.content}</Text>
-            {msg.sender === "Patient" && (
+                {msg.sender === "Patient" && (
+                  <View  style={styles.patientMessageContainer}>
               <Image
-                source={{ uri: msg.conversation?.patient.profile_picture }}
+                source={{ uri: profilePat}}
                 style={styles.profileImage}
               />
+              <Text style={styles.messageText}>{msg.content}</Text>
+              </View>
+            
             )}
+               
+        
           </View>
         ))}
       </ScrollView>
@@ -120,18 +127,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   doctorMessageContainer: {
+    flex:1,
     marginBottom: 8,
     marginLeft: 16,
     padding: 8,
     borderRadius: 8,
     backgroundColor: "#ffffff",
+    alignItems:"flex-start"
+
   },
   patientMessageContainer: {
+    flex:1,
     marginBottom: 8,
     marginRight: 16,
     padding: 8,
     borderRadius: 8,
     backgroundColor: "#e0e0e0",
+    alignItems:"flex-end"
   },
   mainContainer: {
     flex: 1,

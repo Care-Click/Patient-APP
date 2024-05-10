@@ -7,10 +7,14 @@ interface Doctor {
   fullName: string;
   profile_picture: string;
 }
-
+interface patient {
+  fullName: string;
+  profile_picture: string;
+}
 const Messages = ({ navigation }: any) => {
   const [conversations, setConversations] = useState([
-    { doctor: { profile_picture: "", FullName: "" } },
+    { doctor: { profile_picture: "", FullName: "" },patient: { profile_picture: "", FullName: "" } },
+  
   ]);
 
   useEffect(() => {
@@ -40,17 +44,19 @@ const Messages = ({ navigation }: any) => {
             <Pressable
               key={i}
               onPress={() => {
+                console.log(conversation);
+                
                 navigation.navigate("chat", {
                   conversationId: conversation.id,
-                  doctorId: conversation.doctorId,
-                  patientId: conversation.patientId,
+                  profileDoc:conversation.doctor.profile_picture,
+                  profilePat: conversation.patient.profile_picture,
                 });
               }}
             >
               <View style={styles.messageContainer}>
                 <Image
                   style={{ width: 50, height: 50 }}
-                  source={{ uri: conversation.doctor.profile_picture }}
+                  source={{ uri: conversation?.doctor.profile_picture }}
                 />
                 <Text>{conversation.doctor.FullName}</Text>
               </View>
