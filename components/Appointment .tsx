@@ -24,7 +24,7 @@ getDocApp()
   const getDocApp=async()=>{
     try {
       const { data } = await axios.get(
-        `http://192.168.10.11:3000/api/appointment/getAppointements/${doctorId}`
+        `${config.localhost}/api/appointment/getAppointements/${doctorId}`
       );
       
       setAppointments(data);
