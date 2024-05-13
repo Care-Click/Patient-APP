@@ -89,32 +89,36 @@ function Patient({ navigation }: any) {
         </View>
         <Text style={styles.contactHeader}> Near Doctor : </Text>
         {data?.map((element, index) => (
-          <View style={styles.cardContainer} key={index}>
-            <View style={styles.card}>
-              <View style={styles.cardContent}>
-                <Pressable
-                  onPress={() => {
-                    navigation.navigate("Doctordetail", {
-                      doctorId: element.id,
-                    });
-                  }}
-                >
-                  <Text style={styles.cardTitle}>{element.FullName}</Text>
-                </Pressable>
-                <Text style={styles.cardText}>
-                  {element.location?.place?.country}/{element.location?.place?.city}
-                  /{element.location?.place?.district}  
-                </Text>
-                <Text style={styles.cardText}> {element.email}</Text>
-              </View>
-
-              <Image
-                style={styles.cardImage}
-                source={{ uri: element.profile_picture }}
-              />
-            </View>
+  <View style={styles.cardContainer} key={index}>
+    <View style={styles.card}>
+      <View style={styles.cardContent}>
+        <View style={styles.cardHeader}>
+          <Image
+            style={styles.cardImage}
+            source={{ uri: element.profile_picture }}
+          />
+          <View style={styles.cardHeaderText}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Doctordetail", {
+                  doctorId: element.id,
+                });
+              }}
+            >
+              <Text style={styles.cardTitle}>{element.FullName}</Text>
+            </Pressable>
+            <Text   numberOfLines={2} ellipsizeMode="tail" style={styles.cardSubText}>
+              {element.location?.place?.country}/{element.location?.place?.city}
+              /{element.location?.place?.district}  
+            </Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cardSubText}> {element.email}</Text>
           </View>
-        ))}
+        </View>
+      </View>
+    </View>
+  </View>
+))}
+
         <View style={styles.container}>
           <Dialog.Container visible={visible}>
             <Dialog.Title>Emergnecy Request </Dialog.Title>
@@ -203,23 +207,41 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginBottom: 20,
   },
+  
   cardContent: {
     padding: 20,
   },
+  
+  cardHeader: {
+    flexDirection: 'row',
+  },
+  
+  cardHeaderText: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  
   cardTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 5,
   },
-  cardText: {
-    marginTop: 10,
+  
+  cardSubText: {
+    fontSize: 10,
+    // lineHeight: 20, 
+    color: "#555",
+    fontStyle :"italic",
+    fontWeight:"bold"
   },
+  
   cardImage: {
-    width: "100%",
-    height: 300,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    marginRight: 60,
+    width: 100,
+    height: 100,
+    borderRadius: 25,
+
   },
 
   buttonContainer: {

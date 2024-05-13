@@ -30,19 +30,15 @@ const Alldoctors = ({ navigation }: any) => {
     fetchDoctors(searchTerm);
   };
   const renderDoctorItem = ({ item }: { item: Doctor }) => (
-    <TouchableOpacity style={styles.doctorItem}>
+    <TouchableOpacity onPress={() => navigation.navigate('Doctordetail', { doctorId: item.id })}style={styles.doctorItem}>
+      <View style={styles.detail} >
       <Image source={{ uri: item.profile_picture }} style={styles.doctorImage} />
-      <Text style={styles.doctorName}>{item.FullName}</Text>
-      <View style={styles.doctorInfo}>
-
-        {/* <Text style={styles.doctorSpecialty}>{item.MedicalExp.speciality}</Text> */}
-      </View>
-      <TouchableOpacity style={styles.detailButton} onPress={() => navigation.navigate('Doctordetail', { doctorId: item.id })}>
-        <Text style={styles.detailButtonText}>Detail</Text>
-      </TouchableOpacity>
+      <Text   numberOfLines={1} ellipsizeMode="tail" style={styles.doctorName}>{item.FullName}</Text>
+     
+      
       <FontAwesome name="phone" size={24} color="red" style={styles.phoneIcon} />
-      {/* <MaterialCommunityIcons name="message-processing-outline" size={24} color="red" style={styles.phoneIcon}/> */}
-
+      
+      </View>
     </TouchableOpacity>
   )
 
@@ -105,6 +101,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    width:250
   },
   doctorImage: {
     width: 40,
@@ -119,6 +116,8 @@ const styles = StyleSheet.create({
   doctorName: {
     fontSize: 14,
     fontWeight: 'bold',
+    marginTop : 10
+    
   },
   doctorSpecialty: {
     color: 'grey',
@@ -126,16 +125,25 @@ const styles = StyleSheet.create({
   detailButton: {
     backgroundColor: '#EBF4FF',
     borderRadius: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 20,
+   
+    paddingHorizontal: 10
   },
   detailButtonText: {
     color: '#4F8EF7',
     fontSize: 16,
   },
   phoneIcon: {
-    marginHorizontal: 12,
+    
+    marginTop : 10
   },
+
+  detail : {
+    flex:1 ,
+    flexDirection : 'row',
+    justifyContent :"space-around",
+    alignContent: "center",
+    maxWidth : 300
+  }
 
 });
 ;
