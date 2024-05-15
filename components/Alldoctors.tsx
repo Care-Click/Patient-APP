@@ -51,7 +51,9 @@ const Alldoctors = ({ navigation }: any) => {
         value={searchTerm}
         onChangeText={setSearchTerm}
       />
-      <Button title="Search" onPress={searchDoctors} />
+      <View style={styles.button}>
+      <Button  title="Search" onPress={searchDoctors}  />
+      </View>
       <FlatList
         data={doctors}
         renderItem={renderDoctorItem}
@@ -63,21 +65,6 @@ const Alldoctors = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
 
-  doctorContainer: {
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: '#ffffff',
-    borderRadius: 5,
-
-  },
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
 
   container: {
     flex: 1,
@@ -103,9 +90,26 @@ const styles = StyleSheet.create({
     elevation: 5,
     width:250
   },
-  doctorImage: {
-    width: 40,
+
+  doctorContainer: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+
+  },
+  searchInput: {
     height: 40,
+    width:250,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  doctorImage: {
+    width: 10,
+    height: 10,
     borderRadius: 25,
   },
   doctorInfo: {
@@ -116,8 +120,8 @@ const styles = StyleSheet.create({
   doctorName: {
     fontSize: 14,
     fontWeight: 'bold',
-    marginTop : 10
-    
+    marginTop : 10,
+    maxWidth:150,
   },
   doctorSpecialty: {
     color: 'grey',

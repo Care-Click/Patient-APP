@@ -45,6 +45,8 @@ const Doctordetail = ({ navigation }: any) => {
 
         let copy = response.data;
         copy.location = JSON.parse(copy.location);
+      
+        
         setDoctorDetails(copy);
         setLoading(false);
       } catch (error) {
@@ -55,11 +57,10 @@ const Doctordetail = ({ navigation }: any) => {
 
     const checkIfFavorite = async () => {
       try {
-        // Fetch favorites list
+       
         const response = await axios.get(`${config.localhost}/api/patients/getInfo`);
         const favoriteDoctors = response.data.favoriteDoctors;
         
-        // Check if current doctor is in favorites list
         const isFavorite = favoriteDoctors.some((doc: DoctorDetails) => doc.doctorId === doctorId);
         setIsFavorite(isFavorite);
       } catch (error) {
@@ -108,7 +109,6 @@ const Doctordetail = ({ navigation }: any) => {
   const {
     FullName,
     speciality,
-    phone_number,
     email,
     location,
     date_of_birth,

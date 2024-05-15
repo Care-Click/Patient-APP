@@ -1,86 +1,179 @@
-import { StyleSheet, View, Text, Button, TextInput, Image, Pressable } from 'react-native';
-import React , {useEffect} from 'react'
-import { useForm, Controller } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup";
-import axios from 'axios';
-import * as yup from "yup";
-import io from "socket.io-client"
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+  TextInput,
+} from "react-native";
+import axios from "axios";
+import { useRoute } from "@react-navigation/native";
+import io from "socket.io-client";
+import config from "../assets/url";
 
-const Chat = () => {
+  const Chat = ({ navigation }:any) => {
 
+  const route = useRoute();
+  const scrollRef = useRef();
+  const { conversationId,profileDoc,profilePat } = route.params;
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [socket, setSocket] = useState(null);
+  useEffect(() => {
+    getMessages()
+   }, []);
+   useEffect(() => {
+    const newSocket = io("http://192.168.1.12:3000");
+    setSocket(newSocket);
 
+    newSocket.on("connect", () => {
+      console.log("Connected to server");
+      newSocket.emit("joinConversation", conversationId);
+    });
 
-const socket = io("http://192.168.10.21:3001")
+    newSocket.on("newMessage", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
 
- const  sendMessage = async==  ()=>{}
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [conversationId]);
 
-socket.on("send_message",  axios.post()
-   // world
-);
+  const getMessages = async () => {
+    try {
+      const { data } = await axios.get(
+        `${config.localhost}/api/conversations/${conversationId}/messages`
+      );
+      
+      setMessages(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const schema = yup.object().shape({
-  Message: yup.string().required(" messages cannot be empty "),
-})
+  const handleSubmit = async () => {
 
+    if (newMessage.trim() === "") {
+      return;
+    }
+    try {
+      const messageSocket = {
+        conversationId:conversationId ,
+        sender: "Patient",
+        createdAt:  new Date(Date.now()),
+        content: newMessage,
+      };
+      socket.emit("sendMessage",messageSocket);
+      setNewMessage("");
+      getMessages(); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-
-type FormData = {
-  Message :string
-}
-
-const {
-  control,
-  handleSubmit,
-  formState: { errors },
-} = useForm<FormData>({
-  resolver: yupResolver(schema),
-  defaultValues: {
-    Message: ""
-  },
-})
-
+  useEffect(() => {
+    scrollRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   return (
-    <View style={styles.maincontainer} >
-      <Controller
-          control={control}
-          rules={{
-            required: { value: true, message: "Email is required" },
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholder="Message"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              style={styles.input}
-            />
-          )}
-          name="Message"
+    <View style={styles.mainContainer}>
+      <ScrollView ref={scrollRef}>
+        {messages.map((msg, i) => (
+          <View
+            key={i}
+            >
+            {msg.sender === "Doctor" && (<View  style={styles.doctorMessageContainer}>
+              <Image
+                source={{ uri: profileDoc }}
+                style={styles.profileImage}
+              />
+              <Text style={styles.messageText}>{msg.content}</Text>
+
+            </View>
+            )}
+                {msg.sender === "Patient" && (
+                  <View  style={styles.patientMessageContainer}>
+              <Image
+                source={{ uri: profilePat}}
+                style={styles.profileImage}
+              />
+              <Text style={styles.messageText}>{msg.content}</Text>
+              </View>
+            
+            )}
+               
+        
+          </View>
+        ))}
+      </ScrollView>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Type your message..."
+          value={newMessage}
+          onChangeText={(text) => setNewMessage(text)}
         />
-        {errors.Message && <Text>{errors.Message.message}</Text>}
+        <Pressable onPress={handleSubmit}>
+          <Text>Send</Text>
+        </Pressable>
+      </View>
     </View>
-  )
-}
-
-export default Chat
-
+  );
+};
 
 const styles = StyleSheet.create({
-  maincontainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10
-  },
-
-  input: {
+  profileImage: {
+    width: 40,
     height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
     borderRadius: 20,
-    width: 300,
-    color: "black",
   },
-})
+  doctorMessageContainer: {
+    flex:1,
+    marginBottom: 8,
+    marginLeft: 16,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#ffffff",
+    alignItems:"flex-start"
+
+  },
+  patientMessageContainer: {
+    flex:1,
+    marginBottom: 8,
+    marginRight: 16,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#e0e0e0",
+    alignItems:"flex-end"
+  },
+  mainContainer: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f5f5f5",
+  },
+  messageText: {
+    fontSize: 16,
+    color: "#333333",
+  },
+  input: {
+    flex: 1,
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: "#EAEAEA",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#EAEAEA",
+    paddingVertical: 8,
+  },
+});
+
+export default Chat;
