@@ -19,6 +19,8 @@ import Setprofile from "./components/SetProfile";
 import { MaterialIcons } from '@expo/vector-icons';
 import Landing from "./components/Landing";
 import Chat from "./components/Chat";
+import PatientAppointments from "./components/PatientAppointments";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const App = () => {
@@ -88,8 +90,8 @@ const App = () => {
       />
 
 <Tab.Screen
-        name="Appointment"
-        component={AppointmentCalendar}
+        name="Appointments"
+        component={PatientAppointments}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
@@ -121,7 +123,7 @@ const App = () => {
         <Stack.Screen name="Patient" component={TabNavigator} />
         <Stack.Screen name="Doctordetail" component={Doctordetail} />
         <Stack.Screen name="chat" component={Chat} />
-
+        <Stack.Screen name="Appointment" component={AppointmentCalendar}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

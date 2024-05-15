@@ -1,9 +1,18 @@
 import { useRoute } from "@react-navigation/native";
-import axios from "axios";
+import axios from "../assets/axios_config";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, FlatList, Pressable, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  TextInput,
+  ScrollView,
+  Image,
+} from "react-native";
 import { Calendar } from "react-native-calendars";
-import RNPickerSelect from 'react-native-picker-select';
+import RNPickerSelect from "react-native-picker-select";
 import config from "../assets/url";
 
 interface Appointment {
@@ -12,28 +21,36 @@ interface Appointment {
   PatientName: string;
   description: string;
   createdAt: string;
-  doctorId: number;}
+  doctorId: number;
+}
 const AppointmentCalendar = () => {
   const route = useRoute();
-  const doctorId  = route.params.doctorId ;
-
-
-  useEffect(()=>{
-getDocApp()
-  },[])
-  const getDocApp=async()=>{
+  const doctorId = route.params.doctorId
+  const [name, setName] = useState("");
+  useEffect(() => {
+    getPatient();
+    getDocApp();
+  }, []);
+  const getDocApp = async () => {
     try {
       const { data } = await axios.get(
         `${config.localhost}/api/appointment/getAppointements/${doctorId}`
       );
-      
       setAppointments(data);
-      
     } catch (error) {
       console.error("Error fetching appointments:", error);
-     
     }
-  }
+  };
+  const getPatient = async () => {
+    try {
+      const { data } = await axios.get(
+        `${config.localhost}/api/patients/getInfo`
+      );
+      setName(data.FullName);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   const [selectedDate, setSelectedDate] = useState(null);
@@ -41,15 +58,12 @@ getDocApp()
   const [selectedHour, setSelectedHour] = useState("");
 
   const [newMessageContent, setNewMessageContent] = useState("");
-  
-  const handleTimeChange = (selectedHour:any) => {
-   
-   
+
+  const handleTimeChange = (selectedHour: any) => {
     setSelectedHour(selectedHour);
   };
   const handleHourPress = (hour: any) => {
     setSelectedHour(hour);
-   
   };
   const generateTimeOptions = () => {
     const options = [];
@@ -69,75 +83,83 @@ getDocApp()
       setSelectedDate(null);
     }
   };
-  const handlechange=async (e)=>{
+  const handlechange = async (e:any) => {
     e.preventDefault();
     try {
-let hour=""
-if (parseInt(selectedHour)<10) {
-  hour ="0"+selectedHour
-}
-else{
-  hour=selectedHour
-}
-let dateTime=selectedDate+"T"+hour+':00:00Z'
-
-let PatientName="Amine laarif"
-
-      const response = await axios.post(`${config.localhost}/api/appointment/addAppointement/${doctorId}`,{dateTime,description:newMessageContent,PatientName} )
-      alert('New appointment created:', response.data);
- 
-    } 
-    catch (error) {
-      console.error('Error creating appointment:', error);
+      let hour = "";
+      if (parseInt(selectedHour) < 10) {
+        hour = "0" + selectedHour;
+      } else {
+        hour = selectedHour;
+      }
+      let PatientName=name
+      let dateTime = selectedDate + "T" + hour + ":00:00Z";
+      const response = await axios.post(
+        `${config.localhost}/api/appointment/addAppointement/${doctorId}`,
+        { dateTime, description: newMessageContent, PatientName }
+      );
+      alert("New appointment created:", response.data);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
     }
-  }
-  const renderItem = ({ item }) => (
-    <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+  };
+  const renderItem = ({ item}) => (
+    <View
+      style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: "#ccc" }}
+    >
       <Text>Patient Name: {item.PatientName}</Text>
       <Text>Date and Time: {new Date(item.dateTime).toLocaleString()}</Text>
       <Text>Description: {item.description}</Text>
     </View>
   );
   return (
-    <View>
-      <Calendar onDayPress={handleDateSelect} markingType={"period"} style={styles.calender}/>
+    <View style={styles.container}>
+      <View style={styles.base}>
+        <Image
+          style={styles.logo}
+          source={require("../assets/image/logo.png")}
+        />
+        <Text style={styles.name}>CareClick</Text>
+      </View>
+      <ScrollView>
+        <Calendar onDayPress={handleDateSelect} markingType={"period"} />
         <Text style={styles.label}>Selected Date:</Text>
         <TextInput
           style={styles.input}
           placeholder="Type your message..."
-          value={selectedDate} 
-          
+          value={selectedDate}
         />
-      {/* {selectedDate &&  <Text style={styles.lab}>{selectedDate} </Text>} */}
-      <Text style={styles.label}>Select Time in Hours:</Text>
-      <RNPickerSelect
-        items={generateTimeOptions()}
-        onValueChange={handleTimeChange}
-        style={pickerSelectStyles}
-      />
-       <View style={{ flex: 1 }}>
-      <FlatList
-        data={appointments}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
-    </View>
-    <Text style={styles.label}>description:</Text>
-   
-    <TextInput
-          style={styles.input}
-          placeholder="Type your message..."
-          value={newMessageContent}
-          onChangeText={(text) => setNewMessageContent(text)}
+        {/* {selectedDate &&  <Text style={styles.lab}>{selectedDate} </Text>} */}
+        <Text style={styles.label}>Select Time in Hours:</Text>
+        <RNPickerSelect
+          items={generateTimeOptions()}
+          onValueChange={handleTimeChange}
+          style={pickerSelectStyles}
         />
-         <Pressable onPress={(e)=>handlechange(e)}>
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={appointments}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        </View>
 
-<Text   style={styles.submit}>Submit</Text>
-</Pressable >
+        <View>
+          <Text style={styles.label}>description:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Type your message..."
+            value={newMessageContent}
+            onChangeText={(text) => setNewMessageContent(text)}
+          />
+        </View>
+
+        <Pressable onPress={(e) => handlechange(e)}>
+          <Text style={styles.submit}>Submit</Text>
+        </Pressable>
+      </ScrollView>
     </View>
-    
   );
-  
 };
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
@@ -145,82 +167,61 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 4,
-    color: 'black',
-
-   
-    width: '80%',
-    marginTop:20,
-    margin:20
-  }})
+    color: "black",
+    width: "80%",
+    marginTop: 20,
+    margin: 20,
+  },
+});
 const styles = StyleSheet.create({
+  logo: {
+    width: 100,
+    height: 100,
+  },
+  base: {
+    marginRight: 40,
+  },
+  name: {
+    marginLeft: 70,
+    marginTop: -50,
+    color: "#F26268",
+    fontSize: 25,
+    paddingBottom: 60,
+  },
   input: {
-    marginLeft:20,
-    alignItems:"center",
-    width:320,
+    marginLeft: 20,
+    alignItems: "center",
+    width: 320,
     height: 50,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
-    
   },
-  submit:{
-    alignItems:"center",
+  submit: {
+    alignItems: "center",
     fontSize: 16,
     fontWeight: "bold",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,
     borderRadius: 5,
-     width:100,
-    marginLeft:140,
-    backgroundColor: "#1DBED3"
-  },
-  calender:{
-    margin:20
+    width: 100,
+    marginLeft: 140,
+    backgroundColor: "#1DBED3",
   },
   label: {
-    marginLeft:15,
-    fontWeight: 'bold',
-    marginTop:35,
+    fontWeight: "bold",
   },
-  lab: {
-    marginLeft:15,
-    fontWeight: 'bold',
-    marginTop:15,
-  },
+
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  hoursContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  hourButton: {
-    padding: 10,
-    margin: 5,
-    borderWidth: 2,
-    borderColor: "black",
-    borderRadius: 5,
-  },
-  hourText: {
-    fontSize: 10,
-    color: "black",
-  },
-  button : {
-
-  }
 });
 
 export default AppointmentCalendar;
