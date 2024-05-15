@@ -14,28 +14,33 @@ import io from "socket.io-client";
 import config from "../assets/url";
 
   const Chat = ({ navigation }:any) => {
-  const socket = io("http://192.168.1.12:3000");
 
   const route = useRoute();
   const scrollRef = useRef();
   const { conversationId,profileDoc,profilePat } = route.params;
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-
+  const [socket, setSocket] = useState(null);
   useEffect(() => {
     getMessages()
-    socket.on('connect', () => {
-      console.log("connected")
-      socket.emit("joinConversation",conversationId);
-    })
-      socket.on("newMessage", (data) => {
-        
-        console.log(data);
-        
-        setMessages([...messages,data])
-      });
    }, []);
+   useEffect(() => {
+    const newSocket = io("http://192.168.1.12:3000");
+    setSocket(newSocket);
 
+    newSocket.on("connect", () => {
+      console.log("Connected to server");
+      newSocket.emit("joinConversation", conversationId);
+    });
+
+    newSocket.on("newMessage", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [conversationId]);
 
   const getMessages = async () => {
     try {
@@ -62,7 +67,6 @@ import config from "../assets/url";
         content: newMessage,
       };
       socket.emit("sendMessage",messageSocket);
-      await axios.post(`${config.localhost}/api/messages`, messageSocket);
       setNewMessage("");
       getMessages(); 
     } catch (error) {
