@@ -44,7 +44,7 @@ const Messages = ({ navigation }: any) => {
             <Pressable
               key={i}
               onPress={() => {
-                console.log(conversation);
+              
                 
                 navigation.navigate("chat", {
                   conversationId: conversation.id,
