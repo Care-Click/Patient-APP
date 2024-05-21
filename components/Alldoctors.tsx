@@ -108,8 +108,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   doctorImage: {
-    width: 10,
-    height: 10,
+    width: 40,
+    height: 40,
     borderRadius: 25,
   },
   doctorInfo: {

@@ -12,28 +12,60 @@ import axios from '../assets/axios_config';
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
 import config from '../assets/url';
+const data = [
+  { label: " male", value: "male" },
+  { label: " female", value: "female" },
+  { label: " others", value: "others" },
+];
 
+interface inputs {
+  email:string,
+  password :string
+}
 YupPassword(yup)
 
 
 
  function Setprofile({navigation}:any) {
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [address, setAddress] = useState(null);
 
-  interface inputs {
-    email:string,
-    password :string
-  }
 
   const route = useRoute();
   const { email,password  } :any = route.params;
 
   
-  const data = [
-    { label: " male", value: "male" },
-    { label: " female", value: "female" },
-    { label: " others", value: "others" },
-  ];
+  useEffect(()=>{
+  const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Please grant location permissions");
+      return;
+    }
 
+    let location = await Location.getCurrentPositionAsync({})
+      setCurrentLocation(location)
+      console.log(location);
+      
+      reverseGeocode()  
+    ;
+  };
+  getLocation();
+}, []);
+
+const reverseGeocode = async () => {
+  if (currentLocation) {
+    const { coords } = currentLocation;
+    Location.reverseGeocodeAsync({
+      longitude: coords.longitude,
+      latitude: coords.latitude,
+    })
+      .then((reverseGeocodedAddress) => {
+        setLocation({"longitude": coords.longitude,"latitude":coords.latitude,"place":{"city":reverseGeocodedAddress[0].city,"district":reverseGeocodedAddress[0].district,"country":reverseGeocodedAddress[0].country}});
+        console.log(reverseGeocodedAddress);
+      })
+  }
+};
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [genre, setgenre] = useState("");
   const [loca, setLocation] = useState<{
@@ -71,8 +103,8 @@ YupPassword(yup)
         blob: imageBlob, 
       };
   
-      setSelectedImage(localUri); // Store the URI for display
-      return image; // Return the object with URI and Blob for later use
+      setSelectedImage(localUri); 
+      return image; 
     }
   };
 
@@ -140,7 +172,9 @@ const schema = yup.object().shape({
       console.log(error);
     }
  
+    
   }
+console.log("💰💰",loca);
 
   return (
     <View style={styles.container}>
