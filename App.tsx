@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { View, } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 // Import your screen components
 import Signin from "./auth/Signin";
 import Signup from "./auth/Signup";
@@ -38,7 +38,7 @@ const App = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-               <FontAwesome5 name="head-side-cough" size={24} color="#F26268" />
+              <MaterialCommunityIcons name="home-search" size={24} color="#F26268" />
               </View>
             );
           },
@@ -51,30 +51,13 @@ const App = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <MaterialCommunityIcons
-                  name="android-messages"
-                  size={24}
-                  color="#F26268"
-                />
+                <AntDesign name="inbox" size={24} color="#F26268" />
               </View>
             );
           },
         }}
       />
-       <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-               <MaterialCommunityIcons name="face-man-profile" size={24} color="#F26268"/>
-              </View>
-            );
-          },
-        }}
-      />
-
+        
 <Tab.Screen
         name="Message"
         component={Messages}
@@ -102,8 +85,21 @@ const App = () => {
           },
         }}
       />
-
+<Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View style={{ alignItems: "center", justifyContent: "center" }}>
+               <MaterialCommunityIcons name="face-man-profile" size={24} color="#F26268"/>
+              </View>
+            );
+          },
+        }}
+      />
     </Tab.Navigator>
+    
   );
 
   return (
