@@ -103,15 +103,7 @@ const AppointmentCalendar = () => {
       console.error("Error creating appointment:", error);
     }
   };
-  const renderItem = ({ item}) => (
-    <View
-      style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: "#ccc" }}
-    >
-      <Text>Patient Name: {item.PatientName}</Text>
-      <Text>Date and Time: {new Date(item.dateTime).toLocaleString()}</Text>
-      <Text>Description: {item.description}</Text>
-    </View>
-  );
+ 
   return (
     <View style={styles.container}>
       <View style={styles.base}>
@@ -136,14 +128,6 @@ const AppointmentCalendar = () => {
           onValueChange={handleTimeChange}
           style={pickerSelectStyles}
         />
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={appointments}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </View>
-
         <View>
           <Text style={styles.label}>description:</Text>
           <TextInput
